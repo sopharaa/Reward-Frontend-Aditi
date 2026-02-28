@@ -5,7 +5,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <link rel="stylesheet" href="/css/admin-style.css" precedence="default" />
             <link rel="stylesheet" href="/css/manage-users.css" precedence="default" />
 
-            <div className="container">
+            <div className="admin-container">
                 {/* Sidebar */}
                 <aside className="sidebar">
                     <div className="menu">
@@ -30,11 +30,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <li><a href="/admin/staffs">Staffs Management</a></li>
                             <li><a href="/admin/transactions">Transaction History</a></li>
                             <li className="hi">
-                                <form method="POST" action="/api/admin/logout">
+                                <form method="POST" action="/api/admin/logout" className="m-0 p-0">
                                     <button
                                         type="submit"
-                                        className="text-danger border-0 bg-transparent text-start"
-                                        style={{ font: 'inherit', cursor: 'pointer' }}
+                                        className="logout-btn text-danger border-0 bg-transparent w-100"
                                     >
                                         Logout
                                     </button>

@@ -16,7 +16,7 @@ body {
 }
 
 /* Layout Container */
-.container {
+.admin-container {
   display: flex;
   min-height: 100vh;
 }
@@ -55,7 +55,8 @@ body {
   margin: 10px 20px;
 }
 
-.sidebar ul li a {
+.sidebar ul li a,
+.sidebar ul li .logout-btn {
   display: block;
   text-align: center;
   padding: 12px;
@@ -64,11 +65,18 @@ body {
   font-weight: 500;
   text-decoration: none;
   transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
 .sidebar ul li a:hover,
+.sidebar ul li .logout-btn:hover {
+  color: white !important;
+  background-color: #6b46c1 !important;
+}
+
 .sidebar ul li a.active {
-  color: white
+  color: white !important;
+  background-color: #6b46c1 !important;
 }
 
 /* Main Content Area */
