@@ -1,0 +1,94 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Basic body styling */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Layout container for sidebar and content */
+.container {
+    display: flex;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #ffffff;
+    color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #f0f0f0;
+    border-radius: 10px;
+    z-index: 10;
+}
+
+.sidebar .logo {
+    text-align: center;
+    padding-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.sidebar .menu ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.sidebar .menu ul li {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f5;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .menu ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    display: inline-block;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.sidebar .menu ul li:hover {
+    background-color: #6b46c1;
+}
+
+.sidebar .menu ul li a:hover {
+    color: white;
+}
+
+/* Content section */
+.content {
+    margin-left: 270px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+/* Responsive Design for smaller screens */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .content {
+        margin-left: 0;
+        margin-top: 60px;
+    }
+}
