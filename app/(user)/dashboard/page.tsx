@@ -2,7 +2,6 @@
 export default function Dashboard() {
     return (
         <>
-            <head><script src="https://cdn.tailwindcss.com"></script></head>
             <style>{`
         body {
           font-family: 'Inter', sans-serif;
@@ -39,12 +38,12 @@ export default function Dashboard() {
             <div className="w-full p-6 bg-white rounded-xl shadow-lg">
                 {/* Header / Nav */}
                 <nav className="flex justify-between items-center mb-10 pb-4 border-b border-gray-200">
-                    <a href="/dashboard" className="text-2xl font-extrabold text-purple-700">PointTrix</a>
+                    <a href="/dashboard" className="text-2xl font-extrabold text-green-700">PointTrix</a>
                     <ul className="flex space-x-6">
-                        <li><a href="/dashboard" className="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Dashboard</a></li>
-                        <li><a href="/redeem" className="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Redeem Rewards</a></li>
-                        <li><a href="/history" className="text-gray-700 hover:text-purple-600 font-medium transition duration-300">History</a></li>
-                        <li><a href="/profile" className="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Profile</a></li>
+                        <li><a href="/dashboard" className="text-gray-700 hover:text-green-600 font-medium transition duration-300">Dashboard</a></li>
+                        <li><a href="/redeem" className="text-gray-700 hover:text-green-600 font-medium transition duration-300">Redeem Rewards</a></li>
+                        <li><a href="/history" className="text-gray-700 hover:text-green-600 font-medium transition duration-300">History</a></li>
+                        <li><a href="/profile" className="text-gray-700 hover:text-green-600 font-medium transition duration-300">Profile</a></li>
                         <li>
                             <form method="POST" action="/api/logout">
                                 <button type="submit"

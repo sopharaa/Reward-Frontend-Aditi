@@ -3,7 +3,6 @@ import Script from "next/script";
 export default function StaffProcessOrders() {
     return (
         <>
-            <head><script src="https://cdn.tailwindcss.com"></script></head>
             <div className="bg-gray-100 p-8 font-sans">
                 {/* Header */}
                 <header className="mb-10">

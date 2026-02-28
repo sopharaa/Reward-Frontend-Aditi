@@ -10,7 +10,6 @@ export default function StaffOrderHistory() {
 
     return (
         <>
-            <head><script src="https://cdn.tailwindcss.com"></script></head>
             <div className="bg-gray-100 p-8 font-sans">
                 <header className="mb-10">
                     <nav className="flex justify-between items-center pb-4 border-b border-gray-200">

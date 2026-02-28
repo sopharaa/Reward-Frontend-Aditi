@@ -2,7 +2,6 @@
 export default function ErrorPage() {
     return (
         <>
-            <head><script src="https://cdn.tailwindcss.com"></script></head>
             <style>{`
         body {
           font-family: 'Inter', sans-serif;
