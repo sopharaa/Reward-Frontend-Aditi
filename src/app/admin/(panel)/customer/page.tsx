@@ -4,7 +4,7 @@ export default function AdminManageUsers() {
         <div className="users-container">
             {/* Header */}
             <div className="header">
-                <h1>Users Management 👥</h1>
+                <h1>Customers Management 👥</h1>
                 <a href="/admin/dashboard" className="back-link">← Back to Dashboard</a>
             </div>
 
