@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import StoreProvider from "@/store/StoreProvider";
 
 export const metadata: Metadata = {
   title: "Reward System",
@@ -18,7 +19,7 @@ export default function RootLayout({
         <script src="https://cdn.tailwindcss.com" />
       </head>
       <body>
-        {children}
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   );
