@@ -1,22 +1,41 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   useGetCompaniesQuery,
   useDeleteCompanyMutation,
+  useUpdateCompanyMutation,
   Company,
 } from "@/store/api/adminApi";
+import Pagination from "@/components/admin/Pagination";
 
 export default function AdminCompany() {
-  const router = useRouter();
   const { data: companies, isLoading, isError } = useGetCompaniesQuery();
   const [deleteCompany, { isLoading: isDeleting }] = useDeleteCompanyMutation();
+  const [updateCompany, { isLoading: isUpdating }] = useUpdateCompanyMutation();
 
   const [viewCompany, setViewCompany] = useState<Company | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Company | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [editTarget, setEditTarget] = useState<Company | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editType, setEditType] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editError, setEditError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 8;
+
+  // Pre-fill edit form when editTarget changes
+  useEffect(() => {
+    if (editTarget) {
+      setEditName(editTarget.name ?? "");
+      setEditType(editTarget.type ?? "");
+      setEditDescription(editTarget.description ?? "");
+      setEditError(null);
+    }
+  }, [editTarget]);
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -24,42 +43,55 @@ export default function AdminCompany() {
     try {
       await deleteCompany(deleteTarget.id).unwrap();
       setDeleteTarget(null);
-    } catch (err) {
-      const msg =
-        (err as { error?: string })?.error ??
-        "Failed to delete company. Make sure you are logged in.";
-      setDeleteError(msg);
+    } catch (err: unknown) {
+      const e = err as { error?: string; data?: { message?: string }; status?: number };
+      setDeleteError(e?.error ?? e?.data?.message ?? "Failed to delete company. Make sure you are logged in.");
     }
   };
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTarget) return;
+    setEditError(null);
+    try {
+      await updateCompany({ id: editTarget.id, body: { name: editName, type: editType, description: editDescription } }).unwrap();
+      setEditTarget(null);
+    } catch (err: unknown) {
+      const e = err as { error?: string; data?: { message?: string } };
+      setEditError(e?.error ?? e?.data?.message ?? "Failed to update company.");
+    }
+  };
+
+  const inputStyle = { width: "100%", padding: "8px 12px", border: "1px solid #ccc", borderRadius: "8px", fontSize: "14px", marginBottom: "12px", outline: "none", boxSizing: "border-box" as const };
+  const labelStyle = { fontSize: "13px", fontWeight: 600 as const, marginBottom: "4px", display: "block" };
 
   return (
     <div className="users-container">
       {/* Header */}
       <div className="header">
         <h1>Company Management 👥</h1>
-        <Link href="/admin/dashboard" className="back-link">
-          ← Back to Dashboard
-        </Link>
+        <Link href="/admin/dashboard" className="back-link">← Back to Dashboard</Link>
       </div>
 
-      <button
-        className="btn-add-staff"
-        onClick={() => router.push("/admin/companies/create")}
-      >
+      <button className="btn-add-staff" onClick={() => window.location.href = "/admin/companies/create"}>
         Add New Company
       </button>
 
-      {/* Loading / Error states */}
       {isLoading && <p className="text-center py-8 text-gray-500">Loading companies…</p>}
-      {isError && (
-        <p className="text-center py-8 text-red-500">
-          Failed to load companies. Make sure the backend is running.
-        </p>
-      )}
+      {isError && <p className="text-center py-8 text-red-500">Failed to load companies. Make sure the backend is running.</p>}
 
       {/* Companies Table */}
       {!isLoading && !isError && (
         <div className="table-wrapper">
+          <div style={{ marginBottom: "16px", display: "flex", gap: "12px" }}>
+            <input
+              type="text"
+              placeholder="Search by company name or type…"
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+              style={{ width: "100%", padding: "10px 14px", border: "1px solid #ccc", borderRadius: "8px", fontSize: "14px", outline: "none" }}
+            />
+          </div>
           <table className="user-table">
             <thead>
               <tr>
@@ -67,103 +99,110 @@ export default function AdminCompany() {
                 <th>Company Name</th>
                 <th>Type</th>
                 <th>Description</th>
-                <th className="text-right">Actions</th>
+                <th style={{ textAlign: "center" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {companies && companies.length > 0 ? (
-                companies.map((company) => (
+              {(() => {
+                const filtered = (companies ?? []).filter((c) => {
+                  const q = search.toLowerCase();
+                  return c.name?.toLowerCase().includes(q) || c.type?.toLowerCase().includes(q);
+                });
+                const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+                const safePage = Math.min(currentPage, totalPages || 1);
+                const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+                if (paged.length === 0) {
+                  return (
+                    <tr>
+                      <td colSpan={5} className="text-center py-6 text-gray-400">
+                        {search ? "No companies match your search." : "No companies found."}
+                      </td>
+                    </tr>
+                  );
+                }
+                return paged.map((company) => (
                   <tr key={company.id}>
                     <td>{company.id}</td>
                     <td>{company.name}</td>
                     <td>{company.type}</td>
                     <td>{company.description}</td>
-                    <td className="text-right">
-                      <button
-                        onClick={() => setViewCompany(company)}
-                        className="mr-2"
-                      >
-                        Info
-                      </button>
-                      <button
-                        onClick={() =>
-                          router.push(`/admin/companies/${company.id}/edit`)
-                        }
-                        className="mr-2"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => setDeleteTarget(company)}
-                        className="text-red-600"
-                      >
-                        Delete
-                      </button>
+                    <td style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                      <button onClick={() => setViewCompany(company)} style={{ backgroundColor: "#6b46c1", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Info</button>
+                      <button onClick={() => setEditTarget(company)} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Edit</button>
+                      <button onClick={() => setDeleteTarget(company)} style={{ backgroundColor: "#dc2626", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer" }}>Delete</button>
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="text-center py-6 text-gray-400">
-                    No companies found.
-                  </td>
-                </tr>
-              )}
+                ));
+              })()}
             </tbody>
           </table>
+          {(() => {
+            const filtered = (companies ?? []).filter((c) => {
+              const q = search.toLowerCase();
+              return c.name?.toLowerCase().includes(q) || c.type?.toLowerCase().includes(q);
+            });
+            const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+            return <Pagination currentPage={Math.min(currentPage, totalPages || 1)} totalPages={totalPages} onPageChange={(p) => setCurrentPage(p)} />;
+          })()}
         </div>
       )}
 
-      {/* View / Info Modal */}
+      {/* Info Modal */}
       {viewCompany && (
-        <div className="modal">
+        <div className="modal" style={{ display: "flex" }}>
           <div className="modal-content">
             <h2 className="text-xl font-bold mb-4">Company Info</h2>
             <p><strong>ID:</strong> {viewCompany.id}</p>
             <p><strong>Name:</strong> {viewCompany.name}</p>
             <p><strong>Type:</strong> {viewCompany.type}</p>
             <p><strong>Description:</strong> {viewCompany.description}</p>
-            <p>
-              <strong>Created:</strong>{" "}
-              {new Date(viewCompany.createdAt).toLocaleString()}
-            </p>
-            <p>
-              <strong>Updated:</strong>{" "}
-              {new Date(viewCompany.updatedAt).toLocaleString()}
-            </p>
+            <p><strong>Created:</strong> {new Date(viewCompany.createdAt).toLocaleString()}</p>
+            <p><strong>Updated:</strong> {new Date(viewCompany.updatedAt).toLocaleString()}</p>
             <div className="mt-4 flex justify-end">
-              <button onClick={() => setViewCompany(null)}>Close</button>
+              <button className="btn-cancel" onClick={() => setViewCompany(null)}>Close</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editTarget && (
+        <div className="modal" style={{ display: "flex" }}>
+          <div className="modal-content">
+            <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "16px" }}>Edit Company: {editTarget.name}</h2>
+            <form onSubmit={handleEdit}>
+              <label style={labelStyle}>Company Name <span style={{ color: "#dc2626" }}>*</span></label>
+              <input style={inputStyle} type="text" value={editName} onChange={(e) => setEditName(e.target.value)} required />
+
+              <label style={labelStyle}>Company Type <span style={{ color: "#dc2626" }}>*</span></label>
+              <input style={inputStyle} type="text" value={editType} onChange={(e) => setEditType(e.target.value)} required />
+
+              <label style={labelStyle}>Description</label>
+              <textarea style={{ ...inputStyle, resize: "vertical" }} rows={3} value={editDescription} onChange={(e) => setEditDescription(e.target.value)} />
+
+              {editError && <p style={{ color: "#dc2626", fontSize: "13px", marginBottom: "12px" }}>{editError}</p>}
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+                <button type="button" className="btn-cancel" onClick={() => setEditTarget(null)} disabled={isUpdating}>Cancel</button>
+                <button type="submit" disabled={isUpdating} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
+                  {isUpdating ? "Saving…" : "Save Changes"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
 
       {/* Delete Confirmation Modal */}
       {deleteTarget && (
-        <div className="modal">
+        <div className="modal" style={{ display: "flex" }}>
           <div className="modal-content">
             <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
-            <p>
-              Are you sure you want to delete{" "}
-              <strong>{deleteTarget.name}</strong>? This action cannot be
-              undone.
-            </p>
-            {deleteError && (
-              <p className="mt-2 text-red-500 text-sm">{deleteError}</p>
-            )}
+            <p>Are you sure you want to delete <strong>{deleteTarget.name}</strong>? This action cannot be undone.</p>
+            {deleteError && <p className="mt-2 text-red-500 text-sm">{deleteError}</p>}
             <div className="mt-4 flex justify-end gap-2">
-              <button
-                className="btn-cancel"
-                onClick={() => { setDeleteTarget(null); setDeleteError(null); }}
-                disabled={isDeleting}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn-confirm ml-2 bg-red-600 text-white"
-                onClick={handleDelete}
-                disabled={isDeleting}
-              >
+              <button className="btn-cancel" onClick={() => { setDeleteTarget(null); setDeleteError(null); }} disabled={isDeleting}>Cancel</button>
+              <button className="btn-confirm ml-2" onClick={handleDelete} disabled={isDeleting} style={{ backgroundColor: "#dc2626", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
                 {isDeleting ? "Deleting…" : "Delete"}
               </button>
             </div>

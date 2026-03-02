@@ -60,6 +60,10 @@ export default function AdminLoginForm() {
       </h2>
 
       <form className="space-y-5" onSubmit={handleLogin}>
+        {/* Error message from API */}
+        {getErrorMessage() && (
+          <p className="text-red-500 text-sm text-center">{getErrorMessage()}</p>
+        )}
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Username
@@ -88,10 +92,7 @@ export default function AdminLoginForm() {
           />
         </div>
 
-        {/* Error message from API */}
-        {getErrorMessage() && (
-          <p className="text-red-500 text-sm text-center">{getErrorMessage()}</p>
-        )}
+
 
         <button
           type="submit"

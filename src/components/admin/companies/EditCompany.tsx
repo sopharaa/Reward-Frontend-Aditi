@@ -22,9 +22,9 @@ export function EditCompany({ id }: Props) {
     // Pre‑fill the form once the company data is fetched
     useEffect(() => {
         if (company) {
-            setName(company.name);
-            setType(company.type);
-            setDescription(company.description);
+            setName(company.name ?? "");
+            setType(company.type ?? "");
+            setDescription(company.description ?? "");
         }
     }, [company]);
 
