@@ -1,22 +1,109 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useGetRewardsQuery, useDeleteRewardMutation } from "@/store/api/adminApi";
+import {
+    useGetRewardsQuery,
+    useDeleteRewardMutation,
+    useCreateRewardMutation,
+    useUpdateRewardMutation,
+    useGetCompaniesQuery,
+} from "@/store/api/adminApi";
 import type { Reward } from "@/store/api/adminApi";
 import Pagination from "@/components/admin/Pagination";
 
 export default function AdminReward() {
-    const router = useRouter();
     const { data: rewards, isLoading, isError } = useGetRewardsQuery();
+    const { data: companies, isLoading: companiesLoading } = useGetCompaniesQuery();
     const [deleteReward, { isLoading: isDeleting }] = useDeleteRewardMutation();
+    const [createReward, { isLoading: isCreating }] = useCreateRewardMutation();
+    const [updateReward, { isLoading: isUpdating }] = useUpdateRewardMutation();
 
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const PAGE_SIZE = 8;
+
+    // Delete
     const [deleteTarget, setDeleteTarget] = useState<Reward | null>(null);
     const [deleteError, setDeleteError] = useState<string | null>(null);
-    const PAGE_SIZE = 8;
+
+    // Create
+    const [showCreate, setShowCreate] = useState(false);
+    const [createName, setCreateName] = useState("");
+    const [createDescription, setCreateDescription] = useState("");
+    const [createStock, setCreateStock] = useState("");
+    const [createPointRequired, setCreatePointRequired] = useState("");
+    const [createCompanyId, setCreateCompanyId] = useState("");
+    const [createImage, setCreateImage] = useState<File | null>(null);
+    const [createError, setCreateError] = useState<string | null>(null);
+
+    // Edit
+    const [editTarget, setEditTarget] = useState<Reward | null>(null);
+    const [editName, setEditName] = useState("");
+    const [editDescription, setEditDescription] = useState("");
+    const [editStock, setEditStock] = useState("");
+    const [editPointRequired, setEditPointRequired] = useState("");
+    const [editCompanyId, setEditCompanyId] = useState("");
+    const [editImage, setEditImage] = useState<File | null>(null);
+    const [editError, setEditError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (editTarget) {
+            setEditName(editTarget.name ?? "");
+            setEditDescription(editTarget.description ?? "");
+            setEditStock(String(editTarget.stock ?? ""));
+            setEditPointRequired(String(editTarget.pointRequired ?? ""));
+            setEditCompanyId(String(editTarget.companyId ?? ""));
+            setEditImage(null);
+            setEditError(null);
+        }
+    }, [editTarget]);
+
+    const resetCreateForm = () => {
+        setCreateName(""); setCreateDescription(""); setCreateStock("");
+        setCreatePointRequired(""); setCreateCompanyId(""); setCreateImage(null);
+        setCreateError(null);
+    };
+
+    const handleCreate = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setCreateError(null);
+        const formData = new FormData();
+        formData.append("name", createName);
+        formData.append("description", createDescription);
+        formData.append("stock", createStock);
+        formData.append("pointRequired", createPointRequired);
+        formData.append("companyId", createCompanyId);
+        if (createImage) formData.append("image", createImage);
+        try {
+            await createReward(formData).unwrap();
+            setShowCreate(false);
+            resetCreateForm();
+        } catch (err: unknown) {
+            const e = err as { data?: { message?: string } };
+            setCreateError(e?.data?.message ?? "Failed to create reward. Please try again.");
+        }
+    };
+
+    const handleEdit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editTarget) return;
+        setEditError(null);
+        const formData = new FormData();
+        formData.append("name", editName);
+        formData.append("description", editDescription);
+        formData.append("stock", editStock);
+        formData.append("pointRequired", editPointRequired);
+        formData.append("companyId", editCompanyId);
+        if (editImage) formData.append("image", editImage);
+        try {
+            await updateReward({ id: editTarget.id, body: formData }).unwrap();
+            setEditTarget(null);
+        } catch (err: unknown) {
+            const e = err as { data?: { message?: string } };
+            setEditError(e?.data?.message ?? "Failed to update reward.");
+        }
+    };
 
     const handleDelete = async () => {
         if (!deleteTarget) return;
@@ -38,6 +125,9 @@ export default function AdminReward() {
     const safePage = Math.min(currentPage, totalPages || 1);
     const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
+    const inputStyle = { width: "100%", padding: "8px 12px", border: "1px solid #ccc", borderRadius: "8px", fontSize: "14px", marginBottom: "12px", outline: "none", boxSizing: "border-box" as const };
+    const labelStyle = { fontSize: "13px", fontWeight: 600 as const, marginBottom: "4px", display: "block" };
+
     return (
         <div className="users-container">
             <div className="header">
@@ -45,14 +135,15 @@ export default function AdminReward() {
                 <Link href="/admin/dashboard" className="back-link">← Back to Dashboard</Link>
             </div>
 
-            <button className="btn-add-staff" onClick={() => router.push("/admin/rewards/create")}>Add New Reward</button>
+            <button className="btn-add-staff" onClick={() => { resetCreateForm(); setShowCreate(true); }}>
+                Add New Reward
+            </button>
 
             {isLoading && <p className="text-center py-8 text-gray-500">Loading rewards…</p>}
             {isError && <p className="text-center py-8 text-red-500">Failed to load rewards. Make sure the backend is running.</p>}
 
             {!isLoading && !isError && (
                 <div className="table-wrapper mt-4">
-                    {/* Search */}
                     <div style={{ marginBottom: "16px" }}>
                         <input
                             type="text"
@@ -87,11 +178,7 @@ export default function AdminReward() {
                                     <td>
                                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                             {reward.image ? (
-                                                <img
-                                                    src={reward.image}
-                                                    alt={reward.name}
-                                                    style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover", border: "1px solid #e5e7eb", flexShrink: 0 }}
-                                                />
+                                                <img src={reward.image} alt={reward.name} style={{ width: "36px", height: "36px", borderRadius: "6px", objectFit: "cover", border: "1px solid #e5e7eb", flexShrink: 0 }} />
                                             ) : (
                                                 <div style={{ width: "36px", height: "36px", borderRadius: "6px", backgroundColor: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", flexShrink: 0 }}>🎁</div>
                                             )}
@@ -102,7 +189,7 @@ export default function AdminReward() {
                                     <td>{reward.pointRequired}</td>
                                     <td>{reward.companyName}</td>
                                     <td style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                        <button onClick={() => router.push(`/admin/rewards/${reward.id}/edit`)} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Edit</button>
+                                        <button onClick={() => setEditTarget(reward)} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Edit</button>
                                         <button onClick={() => setDeleteTarget(reward)} style={{ backgroundColor: "#dc2626", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer" }}>Delete</button>
                                     </td>
                                 </tr>
@@ -111,6 +198,106 @@ export default function AdminReward() {
                     </table>
 
                     <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={setCurrentPage} />
+                </div>
+            )}
+
+            {/* Create Reward Modal */}
+            {showCreate && (
+                <div className="modal" style={{ display: "flex" }}>
+                    <div className="modal-content" style={{ maxWidth: "520px", width: "100%" }}>
+                        <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "16px" }}>Add New Reward</h2>
+                        <form onSubmit={handleCreate}>
+                            <label style={labelStyle}>Reward Name <span style={{ color: "#dc2626" }}>*</span></label>
+                            <input style={inputStyle} type="text" required value={createName} onChange={(e) => setCreateName(e.target.value)} placeholder="e.g. Free Coffee" />
+
+                            <label style={labelStyle}>Description <span style={{ color: "#dc2626" }}>*</span></label>
+                            <textarea style={{ ...inputStyle, resize: "vertical" }} rows={3} required value={createDescription} onChange={(e) => setCreateDescription(e.target.value)} placeholder="Describe the reward…" />
+
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                                <div>
+                                    <label style={labelStyle}>Stock <span style={{ color: "#dc2626" }}>*</span></label>
+                                    <input style={inputStyle} type="number" required min={0} value={createStock} onChange={(e) => setCreateStock(e.target.value)} placeholder="0" />
+                                </div>
+                                <div>
+                                    <label style={labelStyle}>Points Required <span style={{ color: "#dc2626" }}>*</span></label>
+                                    <input style={inputStyle} type="number" required min={1} value={createPointRequired} onChange={(e) => setCreatePointRequired(e.target.value)} placeholder="100" />
+                                </div>
+                            </div>
+
+                            <label style={labelStyle}>Company <span style={{ color: "#dc2626" }}>*</span></label>
+                            <select style={inputStyle} required value={createCompanyId} onChange={(e) => setCreateCompanyId(e.target.value)} disabled={companiesLoading}>
+                                <option value="" disabled>{companiesLoading ? "Loading companies…" : "-- Choose a company --"}</option>
+                                {(companies ?? []).map((c) => (
+                                    <option key={c.id} value={c.id}>{c.name}</option>
+                                ))}
+                            </select>
+
+                            <label style={labelStyle}>Reward Image (optional)</label>
+                            <input style={{ ...inputStyle, padding: "6px 12px" }} type="file" accept="image/*" onChange={(e) => setCreateImage(e.target.files?.[0] ?? null)} />
+
+                            {createError && <p style={{ color: "#dc2626", fontSize: "13px", marginBottom: "12px" }}>{createError}</p>}
+
+                            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "4px" }}>
+                                <button type="button" className="btn-cancel" onClick={() => { setShowCreate(false); resetCreateForm(); }} disabled={isCreating}>Cancel</button>
+                                <button type="submit" disabled={isCreating} style={{ backgroundColor: "#7c3aed", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
+                                    {isCreating ? "Creating…" : "Add Reward"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Reward Modal */}
+            {editTarget && (
+                <div className="modal" style={{ display: "flex" }}>
+                    <div className="modal-content" style={{ maxWidth: "520px", width: "100%" }}>
+                        <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "16px" }}>Edit Reward: {editTarget.name}</h2>
+                        <form onSubmit={handleEdit}>
+                            <label style={labelStyle}>Reward Name <span style={{ color: "#dc2626" }}>*</span></label>
+                            <input style={inputStyle} type="text" required value={editName} onChange={(e) => setEditName(e.target.value)} />
+
+                            <label style={labelStyle}>Description <span style={{ color: "#dc2626" }}>*</span></label>
+                            <textarea style={{ ...inputStyle, resize: "vertical" }} rows={3} required value={editDescription} onChange={(e) => setEditDescription(e.target.value)} />
+
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                                <div>
+                                    <label style={labelStyle}>Stock <span style={{ color: "#dc2626" }}>*</span></label>
+                                    <input style={inputStyle} type="number" required min={0} value={editStock} onChange={(e) => setEditStock(e.target.value)} />
+                                </div>
+                                <div>
+                                    <label style={labelStyle}>Points Required <span style={{ color: "#dc2626" }}>*</span></label>
+                                    <input style={inputStyle} type="number" required min={1} value={editPointRequired} onChange={(e) => setEditPointRequired(e.target.value)} />
+                                </div>
+                            </div>
+
+                            <label style={labelStyle}>Company <span style={{ color: "#dc2626" }}>*</span></label>
+                            <select style={inputStyle} required value={editCompanyId} onChange={(e) => setEditCompanyId(e.target.value)} disabled={companiesLoading}>
+                                <option value="" disabled>{companiesLoading ? "Loading companies…" : "-- Choose a company --"}</option>
+                                {(companies ?? []).map((c) => (
+                                    <option key={c.id} value={c.id}>{c.name}</option>
+                                ))}
+                            </select>
+
+                            <label style={labelStyle}>Replace Image (optional)</label>
+                            <input style={{ ...inputStyle, padding: "6px 12px" }} type="file" accept="image/*" onChange={(e) => setEditImage(e.target.files?.[0] ?? null)} />
+                            {editTarget.image && !editImage && (
+                                <div style={{ marginTop: "-8px", marginBottom: "12px" }}>
+                                    <img src={editTarget.image} alt="current" style={{ width: "60px", height: "60px", borderRadius: "6px", objectFit: "cover", border: "1px solid #e5e7eb" }} />
+                                    <p style={{ fontSize: "11px", color: "#6b7280", marginTop: "4px" }}>Current image</p>
+                                </div>
+                            )}
+
+                            {editError && <p style={{ color: "#dc2626", fontSize: "13px", marginBottom: "12px" }}>{editError}</p>}
+
+                            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "4px" }}>
+                                <button type="button" className="btn-cancel" onClick={() => setEditTarget(null)} disabled={isUpdating}>Cancel</button>
+                                <button type="submit" disabled={isUpdating} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
+                                    {isUpdating ? "Saving…" : "Save Changes"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             )}
 

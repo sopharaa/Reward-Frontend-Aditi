@@ -1,31 +1,10 @@
-export default function StaffOrderHistory() {
-    const navLinks = [
-        { href: "/staff/orders", label: "Customer Orders" },
-        { href: "/staff/redemptions", label: "Redeem Requests" },
-        { href: "/staff/order-history", label: "Order History" },
-        { href: "/staff/reward-inventory", label: "Reward Inventory" },
-        { href: "/staff/transactions", label: "Transaction History" },
-        { href: "/staff/profile", label: "Profile" },
-    ];
+import StaffHeader from "@/components/layouts/StaffHeader";
 
+export default function StaffOrderHistory() {
     return (
         <>
             <div className="bg-gray-100 p-8 font-sans">
-                <header className="mb-10">
-                    <nav className="flex justify-between items-center pb-4 border-b border-gray-200">
-                        <a href="/staff/orders" className="text-2xl font-extrabold text-indigo-700">PointTrix Staff</a>
-                        <ul className="flex space-x-6">
-                            {navLinks.map(l => (
-                                <li key={l.href}><a href={l.href} className="text-gray-700 hover:text-indigo-600 font-medium transition duration-300">{l.label}</a></li>
-                            ))}
-                            <li>
-                                <form method="POST" action="/api/staff/logout">
-                                    <button type="submit" className="text-red-600 font-medium hover:underline transition duration-300">Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </nav>
-                </header>
+                <StaffHeader />
                 <main>
                     <div className="container mx-auto p-6 bg-white rounded-xl shadow-lg max-w-5xl w-full">
                         <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Order History 🧾</h1>

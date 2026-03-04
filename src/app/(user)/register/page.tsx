@@ -1,102 +1,107 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useUserRegisterMutation, useGetCompaniesQuery } from "@/store/api/adminApi";
+
 export default function Register() {
+    const router = useRouter();
+    const { data: companies, isLoading: companiesLoading } = useGetCompaniesQuery();
+    const [userRegister, { isLoading }] = useUserRegisterMutation();
+
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [companyId, setCompanyId] = useState("");
+    const [agreed, setAgreed] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const inputClass = "mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm";
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+        if (password !== confirmPassword) {
+            setError("Passwords do not match.");
+            return;
+        }
+        try {
+            await userRegister({ companyId: Number(companyId), name, email, password, confirmPassword }).unwrap();
+            router.push("/login");
+        } catch (err: unknown) {
+            const e = err as { data?: { message?: string } };
+            setError(e?.data?.message ?? "Registration failed. Please try again.");
+        }
+    };
+
     return (
-        <>
-            <style>{`
-        body {
-          font-family: 'Inter', sans-serif;
-          background-color: #f0f2f5;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          padding: 20px;
-          box-sizing: border-box;
-        }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
-        .modal {
-          display: none; position: fixed; z-index: 1000;
-          left: 0; top: 0; width: 100%; height: 100%;
-          overflow: auto; background-color: rgba(0,0,0,0.4);
-          justify-content: center; align-items: center;
-        }
-        .modal-content {
-          background-color: #fefefe; margin: auto; padding: 30px;
-          border-radius: 15px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-          max-width: 500px; text-align: center; position: relative;
-        }
-        .close-button {
-          color: #aaa; position: absolute; top: 15px; right: 20px;
-          font-size: 28px; font-weight: bold; cursor: pointer;
-        }
-        .close-button:hover, .close-button:focus { color: black; text-decoration: none; cursor: pointer; }
-      `}</style>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-5">
+            <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+                {/* Brand */}
+                <div className="flex flex-col items-center mb-6">
+                    <div className="w-14 h-14 rounded-full bg-purple-600 flex items-center justify-center mb-3">
+                        <span className="text-white text-2xl font-extrabold">P</span>
+                    </div>
+                    <h1 className="text-xl font-extrabold text-purple-700">PointTrix</h1>
+                </div>
 
-            <div className="container mx-auto p-6 bg-white rounded-xl shadow-lg max-w-md w-full">
-                <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Create Your Account</h1>
+                <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Create Your Account</h2>
 
-                {/* Registration Form */}
-                <form id="register-form" className="space-y-6" method="POST" action="/api/register">
+                {error && (
+                    <p className="mb-4 text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-md py-2 px-3">
+                        {error}
+                    </p>
+                )}
+
+                <form className="space-y-5" onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                        <input type="text" id="name" name="user_name" required
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm" />
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="John Doe" />
                     </div>
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                        <input type="email" id="email" name="user_email" required
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm" />
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} placeholder="you@example.com" />
                     </div>
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input type="password" id="password" name="password" required
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm" />
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass} placeholder="••••••••" />
                     </div>
                     <div>
-                        <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                        <input type="password" id="password_confirmation" name="password_confirmation" required
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm" />
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <input type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className={inputClass} placeholder="••••••••" />
                     </div>
                     <div>
-                        <label htmlFor="company_id" className="block text-sm font-medium text-gray-700 mb-1">Select Company</label>
-                        <select id="company_id" name="company_id" required
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
-                            <option value="" disabled>-- Choose a company --</option>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Select Company</label>
+                        <select required value={companyId} onChange={(e) => setCompanyId(e.target.value)} className={inputClass} disabled={companiesLoading}>
+                            <option value="" disabled>{companiesLoading ? "Loading companies…" : "-- Choose a company --"}</option>
+                            {(companies ?? []).map((c) => (
+                                <option key={c.id} value={c.id}>{c.name}</option>
+                            ))}
                         </select>
                     </div>
-                    <div className="flex items-center">
-                        <input id="terms-checkbox" name="terms-checkbox" type="checkbox" required
-                            className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded" />
-                        <label htmlFor="terms-checkbox" className="ml-2 block text-sm text-gray-900">
-                            I agree to the <a href="/terms" className="font-medium text-purple-600 hover:text-purple-500">Terms and Conditions</a> and <a href="/privacy-policy" className="font-medium text-purple-600 hover:text-purple-500">Privacy Policy</a>.
+                    <div className="flex items-start gap-2">
+                        <input id="terms" type="checkbox" required checked={agreed} onChange={(e) => setAgreed(e.target.checked)}
+                            className="mt-1 h-4 w-4 text-purple-600 border-gray-300 rounded" />
+                        <label htmlFor="terms" className="text-sm text-gray-700">
+                            I agree to the{" "}
+                            <Link href="/terms" className="text-purple-600 hover:underline font-medium">Terms and Conditions</Link>
+                            {" "}and{" "}
+                            <Link href="/privacy-policy" className="text-purple-600 hover:underline font-medium">Privacy Policy</Link>.
                         </label>
                     </div>
-                    <div>
-                        <button type="submit"
-                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300">
-                            Register
-                        </button>
-                    </div>
+                    <button type="submit" disabled={isLoading}
+                        className="w-full py-3 px-4 bg-purple-600 text-white font-semibold rounded-md hover:bg-purple-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                        {isLoading ? "Registering..." : "Register"}
+                    </button>
                 </form>
 
-                {/* Login Link */}
-                <div className="mt-8 text-center text-sm text-gray-600">
-                    Already have an account?{' '}
-                    <a href="/login" className="font-medium text-purple-600 hover:text-purple-500">Login here</a>
-                </div>
+                <p className="mt-6 text-center text-sm text-gray-600">
+                    Already have an account?{" "}
+                    <Link href="/login" className="font-medium text-purple-600 hover:text-purple-500">Login here</Link>
+                </p>
             </div>
-
-            {/* The Modal for error/success messages */}
-            <div id="messageModal" className="modal">
-                <div className="modal-content">
-                    <span className="close-button">&times;</span>
-                    <h2 id="message-modal-title" className="text-2xl font-bold text-gray-800 mb-4"></h2>
-                    <p id="message-modal-message" className="text-gray-700 mb-6"></p>
-                    <button className="bg-purple-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-purple-700 transition duration-300">Got It!</button>
-                </div>
-            </div>
-        </>
+        </div>
     );
 }
