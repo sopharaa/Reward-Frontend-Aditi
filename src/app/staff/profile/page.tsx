@@ -6,7 +6,7 @@ export default function StaffProfile() {
             <div className="bg-gray-100 p-8 font-sans">
                 <StaffHeader />
                 <main>
-                    <div className="container mx-auto p-6 bg-white rounded-xl shadow-lg max-w-3xl w-full">
+                    <div className="container mx-auto p-6 bg-white rounded-xl shadow-lg max-w-6xl w-full">
                         <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Staff Profile 👤</h1>
 
                         <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white p-6 rounded-lg shadow-md mb-8 flex flex-col md:flex-row items-center justify-between">

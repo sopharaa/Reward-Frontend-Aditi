@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useUserRegisterMutation, useGetCompaniesQuery } from "@/store/api/adminApi";
+import { useUserRegisterMutation, useGetPublicCompaniesQuery } from "@/store/api/adminApi";
 
 export default function Register() {
     const router = useRouter();
-    const { data: companies, isLoading: companiesLoading } = useGetCompaniesQuery();
+    const { data: companies, isLoading: companiesLoading } = useGetPublicCompaniesQuery();
     const [userRegister, { isLoading }] = useUserRegisterMutation();
 
     const [name, setName] = useState("");

@@ -6,7 +6,7 @@ export default function StaffRewardInventory() {
             <div className="bg-gray-100 p-8 font-sans">
                 <StaffHeader />
                 <main>
-                    <div className="container mx-auto p-6 bg-white rounded-xl shadow-lg max-w-5xl w-full">
+                    <div className="container mx-auto p-6 bg-white rounded-xl shadow-lg max-w-6xl w-full">
                         <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Reward Inventory 🎁</h1>
 
                         <section className="mb-10">

@@ -39,7 +39,7 @@ export default function StaffProcessOrders() {
             <StaffHeader />
 
             <div className="min-h-screen bg-gray-100 pt-6 px-4 sm:px-8 pb-10">
-                <div className="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-xl">
+                <div className="max-w-6xl mx-auto bg-white p-8 rounded-2xl shadow-xl">
                     <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Customer Order (Staff Panel)</h1>
 
                     <form method="POST" action="/api/staff/process-order">

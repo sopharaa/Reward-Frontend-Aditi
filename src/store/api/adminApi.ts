@@ -58,6 +58,7 @@ export const adminApi = createApi({
 
         // Companies
         getCompanies: builder.query<Company[], void>({ query: () => "/api/admins/companies", providesTags: ["Company"] }),
+        getPublicCompanies: builder.query<Company[], void>({ query: () => "/api/users/companies" }),
         getCompany: builder.query<Company, number>({ query: (id) => `/api/admins/companies/${id}`, providesTags: (_r, _e, id) => [{ type: "Company", id }] }),
         createCompany: builder.mutation<{ message: string; data: Company }, CreateCompanyRequest>({
             query: (body) => ({ url: "/api/admins/companies", method: "POST", body }),
@@ -142,6 +143,7 @@ export const {
     useAdminLoginMutation,
     useStaffLoginMutation,
     useGetCompaniesQuery,
+    useGetPublicCompaniesQuery,
     useGetCompanyQuery,
     useCreateCompanyMutation,
     useUpdateCompanyMutation,

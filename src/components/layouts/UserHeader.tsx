@@ -31,14 +31,14 @@ export default function UserHeader() {
     return (
         <>
             <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
-                <div className="px-6 py-4 flex justify-between items-center">
+                <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
                     {/* Brand */}
                     <Link href="/dashboard" className="text-2xl font-extrabold text-green-700">
                         PointTrix
                     </Link>
 
                     {/* Desktop nav */}
-                    <ul className="hidden md:flex items-center space-x-6">
+                    <ul className="hidden md:flex items-center space-x-8">
                         {navLinks.map((link) => (
                             <li key={link.href}>
                                 <Link
@@ -81,7 +81,7 @@ export default function UserHeader() {
                         menuOpen ? "max-h-96 border-t border-gray-100" : "max-h-0"
                     }`}
                 >
-                    <ul className="flex flex-col px-6 py-2 bg-white">
+                    <ul className="max-w-6xl mx-auto flex flex-col px-6 py-2 bg-white">
                         {navLinks.map((link) => (
                             <li key={link.href} className="border-b border-gray-100 last:border-0">
                                 <Link
