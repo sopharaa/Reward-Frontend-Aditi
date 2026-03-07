@@ -6,6 +6,7 @@ import {
   useGetCompaniesQuery,
   useDeleteCompanyMutation,
   useUpdateCompanyMutation,
+  useCreateCompanyMutation,
   Company,
 } from "@/store/api/adminApi";
 import Pagination from "@/components/admin/Pagination";
@@ -14,6 +15,7 @@ export default function AdminCompany() {
   const { data: companies, isLoading, isError } = useGetCompaniesQuery();
   const [deleteCompany, { isLoading: isDeleting }] = useDeleteCompanyMutation();
   const [updateCompany, { isLoading: isUpdating }] = useUpdateCompanyMutation();
+  const [createCompany, { isLoading: isCreating }] = useCreateCompanyMutation();
 
   const [viewCompany, setViewCompany] = useState<Company | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Company | null>(null);
@@ -26,6 +28,30 @@ export default function AdminCompany() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 8;
+
+  // Create form state
+  const [showCreate, setShowCreate] = useState(false);
+  const [createName, setCreateName] = useState("");
+  const [createType, setCreateType] = useState("");
+  const [createDescription, setCreateDescription] = useState("");
+  const [createError, setCreateError] = useState<string | null>(null);
+
+  const resetCreateForm = () => {
+    setCreateName(""); setCreateType(""); setCreateDescription(""); setCreateError(null);
+  };
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreateError(null);
+    try {
+      await createCompany({ name: createName, type: createType, description: createDescription }).unwrap();
+      setShowCreate(false);
+      resetCreateForm();
+    } catch (err: unknown) {
+      const e = err as { data?: { message?: string } };
+      setCreateError(e?.data?.message ?? "Failed to create company. Please try again.");
+    }
+  };
 
   // Pre-fill edit form when editTarget changes
   useEffect(() => {
@@ -73,7 +99,7 @@ export default function AdminCompany() {
         <Link href="/admin/dashboard" className="back-link">← Back to Dashboard</Link>
       </div>
 
-      <button className="btn-add-staff" onClick={() => window.location.href = "/admin/companies/create"}>
+      <button className="btn-add-staff" onClick={() => { resetCreateForm(); setShowCreate(true); }}>
         Add New Company
       </button>
 
@@ -144,6 +170,34 @@ export default function AdminCompany() {
             const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
             return <Pagination currentPage={Math.min(currentPage, totalPages || 1)} totalPages={totalPages} onPageChange={(p) => setCurrentPage(p)} />;
           })()}
+        </div>
+      )}
+
+      {/* Create Modal */}
+      {showCreate && (
+        <div className="modal" style={{ display: "flex" }}>
+          <div className="modal-content" style={{ maxWidth: "520px", width: "100%" }}>
+            <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "16px" }}>Add New Company</h2>
+            <form onSubmit={handleCreate}>
+              <label style={labelStyle}>Company Name <span style={{ color: "#dc2626" }}>*</span></label>
+              <input style={inputStyle} type="text" required value={createName} onChange={(e) => setCreateName(e.target.value)} placeholder="e.g. Acme Corp" />
+
+              <label style={labelStyle}>Company Type <span style={{ color: "#dc2626" }}>*</span></label>
+              <input style={inputStyle} type="text" required value={createType} onChange={(e) => setCreateType(e.target.value)} placeholder="e.g. Retail, Technology…" />
+
+              <label style={labelStyle}>Description</label>
+              <textarea style={{ ...inputStyle, resize: "vertical" }} rows={3} value={createDescription} onChange={(e) => setCreateDescription(e.target.value)} placeholder="Brief description of the company…" />
+
+              {createError && <p style={{ color: "#dc2626", fontSize: "13px", marginBottom: "12px" }}>{createError}</p>}
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "4px" }}>
+                <button type="button" className="btn-cancel" onClick={() => { setShowCreate(false); resetCreateForm(); }} disabled={isCreating}>Cancel</button>
+                <button type="submit" disabled={isCreating} style={{ backgroundColor: "#7c3aed", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
+                  {isCreating ? "Creating…" : "Add Company"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 

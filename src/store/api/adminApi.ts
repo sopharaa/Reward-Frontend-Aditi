@@ -23,6 +23,8 @@ export interface UpdateRewardRequest { name: string; description: string; stock:
 
 // ── Customer (User) ───────────────────────────────────────────────
 export interface Customer { id: number; companyId: number; companyName: string; name: string; email: string; points: number; profileImage: string; createdAt: string; updatedAt: string; }
+export interface CreateCustomerRequest { companyId: number; name: string; email: string; password: string; confirmPassword: string; }
+export interface UpdateCustomerRequest { name: string; email: string; password?: string; companyId?: number; points?: number; }
 export interface UserLoginRequest { email: string; password: string; }
 export interface UserLoginResponse { id: number; companyId: number; companyName: string; name: string; email: string; points: number; profileImage: string; accessToken: string; refreshToken: string; }
 export interface UserRegisterRequest { companyId: number; name: string; email: string; password: string; confirmPassword: string; }
@@ -128,6 +130,14 @@ export const adminApi = createApi({
 
         // Customers (admin view)
         getCustomers: builder.query<Customer[], void>({ query: () => "/api/admins/users", providesTags: ["Customer"] }),
+        createCustomer: builder.mutation<{ message: string; data: Customer }, CreateCustomerRequest>({
+            query: (body) => ({ url: "/api/admins/users", method: "POST", body }),
+            invalidatesTags: ["Customer"],
+        }),
+        updateCustomer: builder.mutation<{ message: string; data: Customer }, { id: number; body: UpdateCustomerRequest }>({
+            query: ({ id, body }) => ({ url: `/api/admins/users/${id}`, method: "PUT", body }),
+            invalidatesTags: (_r, _e, { id }) => [{ type: "Customer", id }, "Customer"],
+        }),
         deleteCustomer: builder.mutation<{ message: string; data: null }, number>({
             queryFn: async (id, _api, _extra, baseQuery) => {
                 const result = await baseQuery({ url: `/api/admins/users/${id}`, method: "DELETE" });
@@ -157,6 +167,8 @@ export const {
     useUpdateRewardMutation,
     useDeleteRewardMutation,
     useGetCustomersQuery,
+    useCreateCustomerMutation,
+    useUpdateCustomerMutation,
     useDeleteCustomerMutation,
     useUserLoginMutation,
     useUserRegisterMutation,
