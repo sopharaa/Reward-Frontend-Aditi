@@ -87,7 +87,7 @@ export default function Redeem() {
                     </div>
 
                     {/* Section Title */}
-                    <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-3">Redeem Your Rewards 🎁</h1>
+                    <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-3">Redeem Your Rewards</h1>
                     <p className="text-center text-gray-500 mb-10 text-base">Use your points to claim exclusive rewards from your company.</p>
 
                     {/* Rewards Grid */}
@@ -148,7 +148,9 @@ export default function Redeem() {
 
                                             <div className="flex items-center justify-between mb-2 sm:mb-4">
                                                 <div className="flex items-center gap-1 text-green-700 font-semibold text-xs sm:text-sm">
-                                                    <span className="text-base sm:text-xl">⭐</span>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M21.41 11.58l-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42zM6.5 8A1.5 1.5 0 1 1 8 6.5 1.5 1.5 0 0 1 6.5 8z"/>
+                                                    </svg>
                                                     <span>{reward.pointRequired} pts</span>
                                                 </div>
                                                 <span className={`text-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full ${
