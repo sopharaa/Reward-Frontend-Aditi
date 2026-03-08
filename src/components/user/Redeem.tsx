@@ -111,7 +111,6 @@ export default function Redeem() {
                         </div>
                     ) : !rewards || rewards.length === 0 ? (
                         <div className="text-center py-24">
-                            <div className="text-6xl mb-4">🎁</div>
                             <p className="text-gray-500 text-lg italic">No rewards available for your company yet.</p>
                         </div>
                     ) : (
