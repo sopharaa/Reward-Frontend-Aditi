@@ -21,6 +21,7 @@ export default function Redeem() {
 
     const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
     const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+    const [search, setSearch] = useState("");
 
     const initial = user?.name?.charAt(0).toUpperCase() ?? "U";
 
@@ -46,6 +47,10 @@ export default function Redeem() {
     }
 
     const canAfford = (reward: Reward) => (user?.points ?? 0) >= reward.pointRequired;
+
+    const filteredRewards = (rewards ?? [])
+        .filter((r) => r.name.toLowerCase().includes(search.toLowerCase()))
+        .sort((a, b) => a.name.localeCompare(b.name));
 
     return (
         <>
@@ -88,7 +93,35 @@ export default function Redeem() {
 
                     {/* Section Title */}
                     <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-3">Redeem Your Rewards</h1>
-                    <p className="text-center text-gray-500 mb-10 text-base">Use your points to claim exclusive rewards from your company.</p>
+                    <p className="text-center text-gray-500 mb-6 text-base">Use your points to claim exclusive rewards from your company.</p>
+
+                    {/* Search Bar */}
+                    <div className="flex justify-center mb-8">
+                        <div className="relative w-full max-w-md">
+                            <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+                                </svg>
+                            </span>
+                            <input
+                                type="text"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Search rewards…"
+                                className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-gray-300 bg-white shadow-sm text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
+                            />
+                            {search && (
+                                <button
+                                    onClick={() => setSearch("")}
+                                    className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            )}
+                        </div>
+                    </div>
 
                     {/* Rewards Grid */}
                     {rewardsLoading || userLoading ? (
@@ -113,9 +146,13 @@ export default function Redeem() {
                         <div className="text-center py-24">
                             <p className="text-gray-500 text-lg italic">No rewards available for your company yet.</p>
                         </div>
+                    ) : filteredRewards.length === 0 ? (
+                        <div className="text-center py-24">
+                            <p className="text-gray-500 text-lg italic">No rewards match &ldquo;{search}&rdquo;.</p>
+                        </div>
                     ) : (
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                            {rewards.map((reward) => {
+                            {filteredRewards.map((reward) => {
                                 const affordable = canAfford(reward);
                                 const outOfStock = reward.stock <= 0;
                                 return (

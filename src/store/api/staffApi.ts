@@ -48,6 +48,33 @@ export interface OrderResponse {
     createdAt: string;
 }
 
+export interface RedemptionResponse {
+    id: number;
+    userId: number;
+    userName: string;
+    staffId: number | null;
+    staffName: string | null;
+    rewardId: number;
+    rewardName: string;
+    pointSpend: number;
+    status: "PENDING" | "ACCEPT" | "REJECT";
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface RewardItem {
+    id: number;
+    companyId: number;
+    companyName: string;
+    name: string;
+    description: string;
+    stock: number;
+    pointRequired: number;
+    image: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
 function getStaffToken(): string | undefined {
     if (typeof document === "undefined") return undefined;
     return document.cookie
@@ -68,7 +95,7 @@ export const staffApi = createApi({
             return headers;
         },
     }),
-    tagTypes: ["StaffProfile", "Orders"],
+    tagTypes: ["StaffProfile", "Orders", "Redemptions", "Rewards"],
     endpoints: (builder) => ({
         getStaffProfile: builder.query<StaffProfileResponse, void>({
             query: () => "/api/staff/profile",
@@ -97,6 +124,22 @@ export const staffApi = createApi({
             query: () => "/api/staff/orders",
             providesTags: ["Orders"],
         }),
+        getPendingRedemptions: builder.query<RedemptionResponse[], void>({
+            query: () => "/api/staff/redemptions",
+            providesTags: ["Redemptions"],
+        }),
+        updateRedemptionStatus: builder.mutation<RedemptionResponse, { id: number; status: "ACCEPT" | "REJECT" }>({
+            query: ({ id, status }) => ({
+                url: `/api/staff/redemptions/${id}`,
+                method: "PUT",
+                body: { status },
+            }),
+            invalidatesTags: ["Redemptions"],
+        }),
+        getCompanyRewards: builder.query<RewardItem[], void>({
+            query: () => "/api/staff/rewards",
+            providesTags: ["Rewards"],
+        }),
     }),
 });
 
@@ -106,4 +149,7 @@ export const {
     useGetCompanyUsersQuery,
     useCreateOrderMutation,
     useGetMyOrdersQuery,
+    useGetPendingRedemptionsQuery,
+    useUpdateRedemptionStatusMutation,
+    useGetCompanyRewardsQuery,
 } = staffApi;

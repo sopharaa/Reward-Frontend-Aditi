@@ -26,12 +26,44 @@ export interface Reward {
 }
 
 export interface RedeemRewardResponse {
-    message: string;
-    data: {
-        rewardName: string;
-        pointsUsed: number;
-        remainingPoints: number;
-    };
+    id: number;
+    userId: number;
+    userName: string;
+    staffId: number | null;
+    staffName: string | null;
+    rewardId: number;
+    rewardName: string;
+    pointSpend: number;
+    status: "PENDING" | "ACCEPT" | "REJECT";
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface RedemptionResponse {
+    id: number;
+    userId: number;
+    userName: string;
+    staffId: number | null;
+    staffName: string | null;
+    rewardId: number;
+    rewardName: string;
+    pointSpend: number;
+    status: "PENDING" | "ACCEPT" | "REJECT";
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface UserOrderResponse {
+    id: number;
+    staffId: number;
+    staffName: string;
+    userId: number;
+    userName: string;
+    totalAmount: number;
+    pointsEarned: number;
+    orderItems: { name: string; price: number }[];
+    note: string;
+    createdAt: string;
 }
 
 function getUserToken(): string | undefined {
@@ -54,7 +86,7 @@ export const userApi = createApi({
             return headers;
         },
     }),
-    tagTypes: ["UserProfile", "Rewards"],
+    tagTypes: ["UserProfile", "Rewards", "Redemptions", "Orders"],
     endpoints: (builder) => ({
         getUserProfile: builder.query<UserProfileResponse, void>({
             query: () => "/api/users/profile",
@@ -77,9 +109,17 @@ export const userApi = createApi({
                 url: `/api/users/rewards/${rewardId}/redeem`,
                 method: "POST",
             }),
-            invalidatesTags: ["UserProfile", "Rewards"],
+            invalidatesTags: ["UserProfile", "Rewards", "Redemptions"],
+        }),
+        getMyRedemptions: builder.query<RedemptionResponse[], void>({
+            query: () => "/api/users/redemptions",
+            providesTags: ["Redemptions"],
+        }),
+        getMyOrders: builder.query<UserOrderResponse[], void>({
+            query: () => "/api/users/orders",
+            providesTags: ["Orders"],
         }),
     }),
 });
 
-export const { useGetUserProfileQuery, useUpdateUserProfileMutation, useGetRewardsByCompanyQuery, useRedeemRewardMutation } = userApi;
+export const { useGetUserProfileQuery, useUpdateUserProfileMutation, useGetRewardsByCompanyQuery, useRedeemRewardMutation, useGetMyRedemptionsQuery, useGetMyOrdersQuery } = userApi;
