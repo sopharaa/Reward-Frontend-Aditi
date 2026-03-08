@@ -3,6 +3,7 @@ import { useState } from "react";
 import UserHeader from "@/components/layouts/UserHeader";
 import Link from "next/link";
 import { useGetMyRedemptionsQuery, useGetMyOrdersQuery, useGetUserProfileQuery } from "@/store/api/userApi";
+import type { UserOrderResponse, RedemptionResponse } from "@/store/api/userApi";
 
 export default function History() {
     const { data: user } = useGetUserProfileQuery();
@@ -12,10 +13,10 @@ export default function History() {
     const isLoading = redemptionsLoading || ordersLoading;
 
     // Compute summary stats
-    const totalPointsEarned = orders.reduce((sum, o) => sum + (o.pointsEarned ?? 0), 0);
+    const totalPointsEarned = orders.reduce((sum: number, o: UserOrderResponse) => sum + (o.pointsEarned ?? 0), 0);
     const totalPointsRedeemed = redemptions
-        .filter((r) => r.status === "ACCEPT")
-        .reduce((sum, r) => sum + r.pointSpend, 0);
+        .filter((r: RedemptionResponse) => r.status === "ACCEPT")
+        .reduce((sum: number, r: RedemptionResponse) => sum + r.pointSpend, 0);
     const currentBalance = user?.points ?? 0;
 
     // Merge both lists into unified rows, sorted by date DESC
@@ -24,14 +25,14 @@ export default function History() {
         | { kind: "redeem"; id: number; description: string; points: number; status: string; date: string };
 
     const rows: Row[] = [
-        ...orders.map((o) => ({
+        ...orders.map((o: UserOrderResponse) => ({
             kind: "order" as const,
             id: o.id,
-            description: `Purchase – ${o.orderItems?.length ? o.orderItems.map((i) => i.name).join(", ") : "Order"}`,
+            description: `Purchase – ${o.orderItems?.length ? o.orderItems.map((i: { name: string; price: number }) => i.name).join(", ") : "Order"}`,
             points: o.pointsEarned,
             date: o.createdAt,
         })),
-        ...redemptions.map((r) => ({
+        ...redemptions.map((r: RedemptionResponse) => ({
             kind: "redeem" as const,
             id: r.id,
             description: `Redeemed: ${r.rewardName}`,
