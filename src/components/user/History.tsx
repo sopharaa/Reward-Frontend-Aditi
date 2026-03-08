@@ -7,7 +7,7 @@ export default function History() {
             <div className="w-full min-h-screen bg-gray-50">
                 <UserHeader />
 
-                <div className="w-[85%] mx-auto pt-24 pb-10">
+                <div className="w-[85%] mx-auto pt-16 pb-10">
                     <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-2">Transaction History 🧾</h1>
                     <p className="text-center text-gray-500 mb-10">A full record of your points earned and rewards redeemed.</p>
 

@@ -52,9 +52,9 @@ export default function Redeem() {
             <div className="w-full min-h-screen bg-gray-50">
                 <UserHeader />
 
-                <div className="w-[85%] mx-auto pt-24 pb-12">
+                <div className="w-[85%] mx-auto pt-16 pb-12">
                     {/* User Banner */}
-                    <div className="bg-gradient-to-r from-green-600 to-green-800 text-white p-6 rounded-lg shadow-md mb-10 flex flex-col md:flex-row items-center justify-between">
+                    <div className="bg-gradient-to-r from-green-600 to-green-800 text-white p-6 rounded-lg shadow-md mb-6 flex flex-col md:flex-row items-center justify-between">
                         <div className="flex items-center mb-4 md:mb-0">
                             {userLoading ? (
                                 <div className="w-16 h-16 rounded-full border-2 border-white mr-4 bg-green-400 animate-pulse" />

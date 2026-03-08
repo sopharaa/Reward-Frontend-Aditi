@@ -62,29 +62,34 @@ export default function Profile() {
         <div className="w-full min-h-screen bg-gray-50">
             <UserHeader />
 
-            <div className="w-[85%] mx-auto pt-24 pb-8">
-                <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Your Profile 👤</h1>
+            <div className="w-[85%] mx-auto pt-16 pb-8">
 
                 {/* User Banner */}
                 <div className="bg-gradient-to-r from-green-600 to-green-800 text-white p-6 rounded-lg shadow-md mb-8 flex flex-col md:flex-row items-center justify-between">
                     <div className="flex items-center mb-4 md:mb-0">
                         {isLoading ? (
-                            <div className="w-20 h-20 rounded-full border-2 border-white mr-4 bg-green-400 animate-pulse" />
+                            <div className="w-16 h-16 rounded-full border-2 border-white mr-4 bg-green-400 animate-pulse" />
                         ) : user?.profileImage ? (
-                            <img src={user.profileImage} alt={user.name} className="w-20 h-20 rounded-full border-2 border-white mr-4 object-cover" />
+                            <img src={user.profileImage} alt={user.name} className="w-16 h-16 rounded-full border-2 border-white mr-4 object-cover" />
                         ) : (
-                            <div className="w-20 h-20 rounded-full border-2 border-white mr-4 bg-white/20 flex items-center justify-center text-3xl font-extrabold">
+                            <div className="w-16 h-16 rounded-full border-2 border-white mr-4 bg-white/20 flex items-center justify-center text-2xl font-extrabold">
                                 {initial}
                             </div>
                         )}
                         <div>
-                            <p className="text-2xl font-semibold">{isLoading ? "Loading…" : (user?.name ?? "User")}</p>
-                            <p className="text-sm opacity-90">{isLoading ? "…" : (user?.email ?? "")}</p>
+                            <p className="text-xl font-semibold">
+                                {isLoading ? "Loading…" : (user?.name ?? "User")}
+                            </p>
+                            <p className="text-sm text-green-200 mt-1">
+                                Company: {isLoading ? "…" : (user?.companyName ?? "N/A")}
+                            </p>
                         </div>
                     </div>
                     <div className="text-right">
-                        <span className="text-3xl font-bold">Points: {isLoading ? "…" : (user?.points ?? 0)}</span>
-                        <p className="text-sm opacity-90 mt-1">Current points balance</p>
+                        <span className="text-3xl font-bold">
+                            Your Points: {isLoading ? "…" : (user?.points ?? 0)}
+                        </span>
+                        <p className="text-sm opacity-90 mt-1">Points available for redemption</p>
                     </div>
                 </div>
 

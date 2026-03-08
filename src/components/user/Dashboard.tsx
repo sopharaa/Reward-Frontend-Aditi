@@ -13,9 +13,7 @@ export default function Dashboard() {
             <div className="w-full min-h-screen bg-gray-50">
                 <UserHeader />
 
-                <div className="w-[85%] mx-auto pt-24 pb-8">
-                    <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Welcome 👋</h1>
-
+                <div className="w-[85%] mx-auto pt-16 pb-8">
                     {/* User Info Banner */}
                     <div className="bg-gradient-to-r from-green-600 to-green-800 text-white p-6 rounded-lg shadow-md mb-8 flex flex-col md:flex-row items-center justify-between">
                         <div className="flex items-center mb-4 md:mb-0">
@@ -74,27 +72,23 @@ export default function Dashboard() {
                     {/* How to Use Section */}
                     <section className="mb-12">
                         <h2 className="text-3xl font-bold text-gray-700 mb-8 border-b-2 border-green-300 pb-3 text-center">How to Use PointTrix</h2>
-                        <div className="max-w-2xl mx-auto relative border-l-4 border-green-400 pl-6 space-y-10">
-                            <div className="relative">
-                                <div className="absolute -left-7 top-1.5 bg-green-400 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                                <h3 className="text-lg font-semibold text-gray-800">Buy Item 🛒</h3>
-                                <p className="text-sm text-gray-600 mt-1">Start your journey by making a purchase through your company&apos;s store. Whether it&apos;s office supplies, apparel, or electronics, every eligible item counts. Simply log in, shop as usual, and make sure your purchase is linked to your PointTrix account. Once your order is confirmed, you&apos;ll be ready to earn.</p>
-                            </div>
-                            <div className="relative">
-                                <div className="absolute -left-7 top-1.5 bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                                <h3 className="text-lg font-semibold text-gray-800">Earn Points 💰</h3>
-                                <p className="text-sm text-gray-600 mt-1">After your purchase, points are automatically credited to your account based on the order amount. The more you shop, the more points you accumulate. These points reflect your activity and loyalty, giving you the power to unlock various benefits and rewards over time.</p>
-                            </div>
-                            <div className="relative">
-                                <div className="absolute -left-7 top-1.5 bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                                <h3 className="text-lg font-semibold text-gray-800">Use Points 🎯</h3>
-                                <p className="text-sm text-gray-600 mt-1">Once you&apos;ve earned enough points, you can start exploring our rewards catalog. From gift cards and gadgets to exclusive services, there&apos;s something for everyone. Select the item you want and apply your points during the redemption process.</p>
-                            </div>
-                            <div className="relative">
-                                <div className="absolute -left-7 top-1.5 bg-yellow-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">4</div>
-                                <h3 className="text-lg font-semibold text-gray-800">Get Reward 🎁</h3>
-                                <p className="text-sm text-gray-600 mt-1">Once your redemption is confirmed, your reward will be processed instantly. Enjoy your perks — you&apos;ve earned them!</p>
-                            </div>
+                        <div className="max-w-4xl mx-auto space-y-8">
+                            {[
+                                { num: "1", color: "bg-green-400", title: "Buy Item 🛒", text: "Start your journey by making a purchase through your company's store. Whether it's office supplies, apparel, or electronics, every eligible item counts. Simply log in, shop as usual, and make sure your purchase is linked to your PointTrix account. Once your order is confirmed, you'll be ready to earn." },
+                                { num: "2", color: "bg-green-500", title: "Earn Points 💰", text: "After your purchase, points are automatically credited to your account based on the order amount. The more you shop, the more points you accumulate. These points reflect your activity and loyalty, giving you the power to unlock various benefits and rewards over time." },
+                                { num: "3", color: "bg-green-600", title: "Use Points 🎯", text: "Once you've earned enough points, you can start exploring our rewards catalog. From gift cards and gadgets to exclusive services, there's something for everyone. Select the item you want and apply your points during the redemption process." },
+                                { num: "4", color: "bg-yellow-500", title: "Get Reward 🎁", text: "Once your redemption is confirmed, your reward will be processed instantly. Enjoy your perks — you've earned them!" },
+                            ].map((step) => (
+                                <div key={step.num} className="flex items-start gap-5">
+                                    <div className={`shrink-0 ${step.color} text-white w-11 h-11 rounded-full flex items-center justify-center text-base font-bold shadow`}>
+                                        {step.num}
+                                    </div>
+                                    <div className="border-l-4 border-green-400 pl-5 flex-1">
+                                        <h3 className="text-lg font-semibold text-gray-800">{step.title}</h3>
+                                        <p className="text-sm text-gray-600 mt-1">{step.text}</p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                         <div className="text-center mt-10">
                             <Link href="/history" className="inline-block text-green-600 hover:text-green-500 font-medium">View Your History →</Link>
