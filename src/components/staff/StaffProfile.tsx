@@ -65,7 +65,6 @@ export default function StaffProfile() {
             <StaffHeader />
 
             <div className="w-[85%] mx-auto pt-16 pb-8">
-                <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Staff Profile 👤</h1>
 
                 {/* Staff Banner */}
                 <div className="bg-gradient-to-r from-green-600 to-green-800 text-white p-6 rounded-lg shadow-md mb-8 flex flex-col md:flex-row items-center justify-between">

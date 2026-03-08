@@ -140,6 +140,10 @@ export const staffApi = createApi({
             query: () => "/api/staff/rewards",
             providesTags: ["Rewards"],
         }),
+        getCompanyTransactions: builder.query<RedemptionResponse[], void>({
+            query: () => "/api/staff/company-transactions",
+            providesTags: ["Redemptions"],
+        }),
     }),
 });
 
@@ -152,4 +156,5 @@ export const {
     useGetPendingRedemptionsQuery,
     useUpdateRedemptionStatusMutation,
     useGetCompanyRewardsQuery,
+    useGetCompanyTransactionsQuery,
 } = staffApi;

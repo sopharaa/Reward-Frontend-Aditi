@@ -22,6 +22,7 @@ export default function Redeem() {
     const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
     const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
     const [search, setSearch] = useState("");
+    const [stockFilter, setStockFilter] = useState<"all" | "instock" | "outofstock">("all");
 
     const initial = user?.name?.charAt(0).toUpperCase() ?? "U";
 
@@ -50,7 +51,18 @@ export default function Redeem() {
 
     const filteredRewards = (rewards ?? [])
         .filter((r) => r.name.toLowerCase().includes(search.toLowerCase()))
-        .sort((a, b) => a.name.localeCompare(b.name));
+        .filter((r) => {
+            if (stockFilter === "instock") return r.stock > 0;
+            if (stockFilter === "outofstock") return r.stock <= 0;
+            return true;
+        })
+        .sort((a, b) => {
+            // out-of-stock goes last
+            if (a.stock <= 0 && b.stock > 0) return 1;
+            if (a.stock > 0 && b.stock <= 0) return -1;
+            // within same group, sort A-Z
+            return a.name.localeCompare(b.name);
+        });
 
     return (
         <>
@@ -95,9 +107,9 @@ export default function Redeem() {
                     <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-3">Redeem Your Rewards</h1>
                     <p className="text-center text-gray-500 mb-6 text-base">Use your points to claim exclusive rewards from your company.</p>
 
-                    {/* Search Bar */}
-                    <div className="flex justify-center mb-8">
-                        <div className="relative w-full max-w-md">
+                    {/* Search Bar + Filter */}
+                    <div className="flex flex-col sm:flex-row items-stretch gap-2 sm:gap-3 mb-8 sm:max-w-xl mx-auto">
+                        <div className="relative w-full">
                             <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
@@ -120,6 +132,28 @@ export default function Redeem() {
                                     </svg>
                                 </button>
                             )}
+                        </div>
+
+                        <div className="relative w-full sm:w-36 shrink-0">
+                            <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+                                </svg>
+                            </span>
+                            <select
+                                value={stockFilter}
+                                onChange={(e) => setStockFilter(e.target.value as "all" | "instock" | "outofstock")}
+                                className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-gray-300 bg-white shadow-sm text-sm font-medium text-gray-700 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+                            >
+                                <option value="all">All</option>
+                                <option value="instock">In Stock</option>
+                                <option value="outofstock">Out of Stock</option>
+                            </select>
+                            <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
                         </div>
                     </div>
 

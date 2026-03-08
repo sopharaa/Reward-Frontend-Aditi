@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import UserHeader from "@/components/layouts/UserHeader";
 import Link from "next/link";
 import { useGetMyRedemptionsQuery, useGetMyOrdersQuery, useGetUserProfileQuery } from "@/store/api/userApi";
@@ -47,6 +48,12 @@ export default function History() {
             return <span className="inline-block bg-red-100 text-red-600 font-semibold px-3 py-1 rounded-full text-xs">Rejected</span>;
         return <span className="inline-block bg-yellow-100 text-yellow-700 font-semibold px-3 py-1 rounded-full text-xs">Pending</span>;
     }
+
+    const PAGE_SIZE = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+    const pagedRows = rows.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
     return (
         <>
@@ -120,9 +127,9 @@ export default function History() {
                                         </td>
                                     </tr>
                                 ) : (
-                                    rows.map((row, idx) => (
+                                    pagedRows.map((row, idx) => (
                                         <tr key={`${row.kind}-${row.id}`} className="hover:bg-gray-50 transition">
-                                            <td className="px-6 py-3 text-gray-500">{idx + 1}</td>
+                                            <td className="px-6 py-3 text-gray-500">{(currentPage - 1) * PAGE_SIZE + idx + 1}</td>
                                             <td className="px-6 py-3">{row.description}</td>
                                             <td className="px-6 py-3 text-center">
                                                 {row.kind === "order" ? (
@@ -153,6 +160,65 @@ export default function History() {
                                 )}
                             </tbody>
                         </table>
+
+                        {/* Pagination */}
+                        {!isLoading && rows.length > PAGE_SIZE && (
+                            <div className="px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                                <p className="text-sm text-gray-400">
+                                    Showing{" "}
+                                    <span className="font-medium text-gray-600">{(currentPage - 1) * PAGE_SIZE + 1}</span>–
+                                    <span className="font-medium text-gray-600">{Math.min(currentPage * PAGE_SIZE, rows.length)}</span> of{" "}
+                                    <span className="font-medium text-gray-600">{rows.length}</span>
+                                </p>
+                                <div className="flex items-center gap-1">
+                                    {/* Prev */}
+                                    <button
+                                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                                        disabled={currentPage === 1}
+                                        className="px-3 py-1.5 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                    >
+                                        ‹
+                                    </button>
+
+                                    {/* Page numbers */}
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                                        .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                                        .reduce<(number | "…")[]>((acc, p, i, arr) => {
+                                            if (i > 0 && p - (arr[i - 1] as number) > 1) acc.push("…");
+                                            acc.push(p);
+                                            return acc;
+                                        }, [])
+                                        .map((item, i) =>
+                                            item === "…" ? (
+                                                <span key={`ellipsis-${i}`} className="px-2 text-gray-400 text-sm">
+                                                    …
+                                                </span>
+                                            ) : (
+                                                <button
+                                                    key={item}
+                                                    onClick={() => setCurrentPage(item as number)}
+                                                    className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition ${
+                                                        currentPage === item
+                                                            ? "bg-green-600 text-white border-green-600"
+                                                            : "border-gray-300 text-gray-600 hover:bg-gray-50"
+                                                    }`}
+                                                >
+                                                    {item}
+                                                </button>
+                                            )
+                                        )}
+
+                                    {/* Next */}
+                                    <button
+                                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="px-3 py-1.5 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                    >
+                                        ›
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="text-center mt-8">
