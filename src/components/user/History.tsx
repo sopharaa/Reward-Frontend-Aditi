@@ -7,7 +7,7 @@ export default function History() {
             <div className="w-full min-h-screen bg-gray-50">
                 <UserHeader />
 
-                <div className="w-[85%] mx-auto py-10">
+                <div className="w-[85%] mx-auto pt-24 pb-10">
                     <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-2">Transaction History 🧾</h1>
                     <p className="text-center text-gray-500 mb-10">A full record of your points earned and rewards redeemed.</p>
 
@@ -19,11 +19,11 @@ export default function History() {
                         </div>
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
                             <p className="text-sm text-gray-500 mb-1">Total Points Redeemed</p>
-                            <p className="text-3xl font-extrabold text-purple-600">0</p>
+                            <p className="text-3xl font-extrabold text-green-600">0</p>
                         </div>
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
                             <p className="text-sm text-gray-500 mb-1">Current Balance</p>
-                            <p className="text-3xl font-extrabold text-indigo-600">0</p>
+                            <p className="text-3xl font-extrabold text-green-800">0</p>
                         </div>
                     </div>
 
@@ -59,7 +59,7 @@ export default function History() {
                     </div>
 
                     <div className="text-center mt-8">
-                        <Link href="/dashboard" className="text-purple-600 hover:text-purple-500 font-medium">
+                        <Link href="/dashboard" className="text-green-600 hover:text-green-500 font-medium">
                             ← Back to Dashboard
                         </Link>
                     </div>
@@ -68,4 +68,3 @@ export default function History() {
         </>
     );
 }
-

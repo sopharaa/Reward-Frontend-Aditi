@@ -71,12 +71,12 @@ body {
 .sidebar ul li a:hover,
 .sidebar ul li .logout-btn:hover {
   color: white !important;
-  background-color: #6b46c1 !important;
+  background-color: #059669 !important;
 }
 
 .sidebar ul li a.active {
   color: white !important;
-  background-color: #6b46c1 !important;
+  background-color: #059669 !important;
 }
 
 /* Main Content Area */
@@ -267,7 +267,7 @@ button.delete-reward-button:hover {
 
 
 .btn-add-staff {
-  background-color: #614cafff;
+  background-color: #059669;
   color: white;
   padding: 10px 16px;
   font-size: 14px;
@@ -278,7 +278,7 @@ button.delete-reward-button:hover {
 }
 
 .btn-add-staff:hover {
-  background-color: #45a049;
+  background-color: #047857;
 }
 
 .btn-edit,
@@ -290,12 +290,12 @@ button.delete-reward-button:hover {
 }
 
 .btn-edit {
-  background-color: #4f46e5;
+  background-color: #059669;
   color: white;
 }
 
 .btn-edit:hover {
-  background-color: #4338ca;
+  background-color: #047857;
 }
 
 .btn-delete {

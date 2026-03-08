@@ -130,7 +130,7 @@ export default function AdminCustomer() {
     return (
         <div className="users-container">
             <div className="header">
-                <h1>Customers Management 👥</h1>
+                <h1>Customers Management</h1>
                 <Link href="/admin/dashboard" className="back-link">← Back to Dashboard</Link>
             </div>
 
@@ -182,7 +182,7 @@ export default function AdminCustomer() {
                                                     style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover", border: "2px solid #e5e7eb", flexShrink: 0 }}
                                                 />
                                             ) : (
-                                                <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 700, fontSize: "14px", flexShrink: 0 }}>
+                                                <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#059669", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 700, fontSize: "14px", flexShrink: 0 }}>
                                                     {customer.name?.charAt(0).toUpperCase()}
                                                 </div>
                                             )}
@@ -193,7 +193,7 @@ export default function AdminCustomer() {
                                     <td>{customer.companyName}</td>
                                     <td>{customer.points}</td>
                                     <td style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                        <button onClick={() => setEditTarget(customer)} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Edit</button>
+                                        <button onClick={() => setEditTarget(customer)} style={{ backgroundColor: "#059669", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Edit</button>
                                         <button onClick={() => setDeleteTarget(customer)} style={{ backgroundColor: "#dc2626", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer" }}>Delete</button>
                                     </td>
                                 </tr>
@@ -257,7 +257,7 @@ export default function AdminCustomer() {
 
                             <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "4px" }}>
                                 <button type="button" className="btn-cancel" onClick={() => { setShowCreate(false); resetCreateForm(); }} disabled={isCreating}>Cancel</button>
-                                <button type="submit" disabled={isCreating} style={{ backgroundColor: "#7c3aed", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
+                                <button type="submit" disabled={isCreating} style={{ backgroundColor: "#059669", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
                                     {isCreating ? "Creating…" : "Add Customer"}
                                 </button>
                             </div>
@@ -299,7 +299,7 @@ export default function AdminCustomer() {
 
                             <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "4px" }}>
                                 <button type="button" className="btn-cancel" onClick={() => setEditTarget(null)} disabled={isUpdating}>Cancel</button>
-                                <button type="submit" disabled={isUpdating} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
+                                <button type="submit" disabled={isUpdating} style={{ backgroundColor: "#059669", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
                                     {isUpdating ? "Saving…" : "Save Changes"}
                                 </button>
                             </div>

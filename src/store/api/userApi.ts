@@ -12,6 +12,28 @@ export interface UserProfileResponse {
     updatedAt: string;
 }
 
+export interface Reward {
+    id: number;
+    companyId: number;
+    companyName: string;
+    name: string;
+    description: string;
+    stock: number;
+    pointRequired: number;
+    image: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface RedeemRewardResponse {
+    message: string;
+    data: {
+        rewardName: string;
+        pointsUsed: number;
+        remainingPoints: number;
+    };
+}
+
 function getUserToken(): string | undefined {
     if (typeof document === "undefined") return undefined;
     return document.cookie
@@ -32,7 +54,7 @@ export const userApi = createApi({
             return headers;
         },
     }),
-    tagTypes: ["UserProfile"],
+    tagTypes: ["UserProfile", "Rewards"],
     endpoints: (builder) => ({
         getUserProfile: builder.query<UserProfileResponse, void>({
             query: () => "/api/users/profile",
@@ -46,7 +68,18 @@ export const userApi = createApi({
             }),
             invalidatesTags: ["UserProfile"],
         }),
+        getRewardsByCompany: builder.query<Reward[], void>({
+            query: () => `/api/users/rewards`,
+            providesTags: ["Rewards"],
+        }),
+        redeemReward: builder.mutation<RedeemRewardResponse, number>({
+            query: (rewardId) => ({
+                url: `/api/users/rewards/${rewardId}/redeem`,
+                method: "POST",
+            }),
+            invalidatesTags: ["UserProfile", "Rewards"],
+        }),
     }),
 });
 
-export const { useGetUserProfileQuery, useUpdateUserProfileMutation } = userApi;
+export const { useGetUserProfileQuery, useUpdateUserProfileMutation, useGetRewardsByCompanyQuery, useRedeemRewardMutation } = userApi;

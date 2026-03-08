@@ -70,8 +70,8 @@ export default function AdminDashboardStat() {
         background: "#fff",
         borderRadius: 14,
         padding: "22px 20px",
-        boxShadow: "0 1px 8px rgba(99,91,255,0.07)",
-        border: "1px solid #eeecf9",
+        boxShadow: "0 1px 8px rgba(5,150,105,0.07)",
+        border: "1px solid #d1fae5",
         transition: "transform 0.15s, box-shadow 0.15s",
         cursor: "pointer",
         textDecoration: "none",
@@ -83,7 +83,7 @@ export default function AdminDashboardStat() {
 
             {/* Header */}
             <div style={{ marginBottom: 28 }}>
-                <h1 style={{ fontSize: 24, fontWeight: 700, color: "#1e1b4b", margin: 0 }}>Dashboard</h1>
+                <h1 style={{ fontSize: 24, fontWeight: 700, color: "#064e3b", margin: 0 }}>Dashboard</h1>
                 <p style={{ color: "#9ca3af", marginTop: 4, fontSize: 13 }}>
                     {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
                 </p>
@@ -95,30 +95,30 @@ export default function AdminDashboardStat() {
                     <Link key={label} href={href} style={card}
                         onMouseEnter={e => {
                             (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-2px)";
-                            (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 20px rgba(99,91,255,0.13)";
+                            (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 20px rgba(5,150,105,0.13)";
                         }}
                         onMouseLeave={e => {
                             (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
-                            (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 1px 8px rgba(99,91,255,0.07)";
+                            (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 1px 8px rgba(5,150,105,0.07)";
                         }}
                     >
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                             <div>
                                 <p style={{ fontSize: 12, color: "#9ca3af", fontWeight: 500, margin: "0 0 8px" }}>{label}</p>
-                                <p style={{ fontSize: 30, fontWeight: 800, color: "#1e1b4b", margin: 0, lineHeight: 1 }}>
+                                <p style={{ fontSize: 30, fontWeight: 800, color: "#064e3b", margin: 0, lineHeight: 1 }}>
                                     {val(value)}
                                 </p>
                             </div>
                             <div style={{
                                 width: 42, height: 42, borderRadius: 10,
-                                background: "#ede9fe",
+                                background: "#d1fae5",
                                 display: "flex", alignItems: "center", justifyContent: "center",
-                                color: "#7c3aed", flexShrink: 0,
+                                color: "#059669", flexShrink: 0,
                             }}>
                                 <Icon />
                             </div>
                         </div>
-                        <p style={{ fontSize: 11, color: "#7c3aed", marginTop: 14, fontWeight: 600, margin: "14px 0 0" }}>
+                        <p style={{ fontSize: 11, color: "#059669", marginTop: 14, fontWeight: 600, margin: "14px 0 0" }}>
                             View all →
                         </p>
                     </Link>
@@ -129,13 +129,13 @@ export default function AdminDashboardStat() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
 
                 {/* Recent Customers */}
-                <div style={{ background: "#fff", borderRadius: 14, padding: "20px", boxShadow: "0 1px 8px rgba(99,91,255,0.07)", border: "1px solid #eeecf9" }}>
+                <div style={{ background: "#fff", borderRadius: 14, padding: "20px", boxShadow: "0 1px 8px rgba(5,150,105,0.07)", border: "1px solid #d1fae5" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                        <h3 style={{ fontSize: 14, fontWeight: 700, color: "#1e1b4b", margin: 0 }}>Recent Customers</h3>
-                        <Link href="/admin/customer" style={{ fontSize: 11, color: "#7c3aed", fontWeight: 600, textDecoration: "none" }}>View all</Link>
+                        <h3 style={{ fontSize: 14, fontWeight: 700, color: "#064e3b", margin: 0 }}>Recent Customers</h3>
+                        <Link href="/admin/customer" style={{ fontSize: 11, color: "#059669", fontWeight: 600, textDecoration: "none" }}>View all</Link>
                     </div>
                     {loadingCustomers ? (
-                        <p style={{ color: "#c4b5fd", fontSize: 13 }}>Loading…</p>
+                        <p style={{ color: "#6ee7b7", fontSize: 13 }}>Loading…</p>
                     ) : recentCustomers.length === 0 ? (
                         <p style={{ color: "#9ca3af", fontSize: 13 }}>No customers yet.</p>
                     ) : (
@@ -143,9 +143,9 @@ export default function AdminDashboardStat() {
                             {recentCustomers.map((c) => (
                                 <div key={c.id} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                                     {c.profileImage ? (
-                                        <img src={c.profileImage} alt={c.name} style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", border: "2px solid #ede9fe", flexShrink: 0 }} />
+                                        <img src={c.profileImage} alt={c.name} style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", border: "2px solid #d1fae5", flexShrink: 0 }} />
                                     ) : (
-                                        <div style={{ width: 34, height: 34, borderRadius: "50%", background: "#ede9fe", color: "#7c3aed", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 13, flexShrink: 0 }}>
+                                        <div style={{ width: 34, height: 34, borderRadius: "50%", background: "#d1fae5", color: "#059669", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 13, flexShrink: 0 }}>
                                             {c.name?.charAt(0).toUpperCase()}
                                         </div>
                                     )}
@@ -153,7 +153,7 @@ export default function AdminDashboardStat() {
                                         <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#1e1b4b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.name}</p>
                                         <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{c.companyName}</p>
                                     </div>
-                                    <span style={{ fontSize: 11, fontWeight: 600, color: "#7c3aed", background: "#ede9fe", borderRadius: 20, padding: "2px 9px", whiteSpace: "nowrap" }}>
+                                    <span style={{ fontSize: 11, fontWeight: 600, color: "#059669", background: "#d1fae5", borderRadius: 20, padding: "2px 9px", whiteSpace: "nowrap" }}>
                                         {c.points} pts
                                     </span>
                                 </div>
@@ -163,13 +163,13 @@ export default function AdminDashboardStat() {
                 </div>
 
                 {/* Recent Rewards */}
-                <div style={{ background: "#fff", borderRadius: 14, padding: "20px", boxShadow: "0 1px 8px rgba(99,91,255,0.07)", border: "1px solid #eeecf9" }}>
+                <div style={{ background: "#fff", borderRadius: 14, padding: "20px", boxShadow: "0 1px 8px rgba(5,150,105,0.07)", border: "1px solid #d1fae5" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                        <h3 style={{ fontSize: 14, fontWeight: 700, color: "#1e1b4b", margin: 0 }}>Recent Rewards</h3>
-                        <Link href="/admin/rewards" style={{ fontSize: 11, color: "#7c3aed", fontWeight: 600, textDecoration: "none" }}>View all</Link>
+                        <h3 style={{ fontSize: 14, fontWeight: 700, color: "#064e3b", margin: 0 }}>Recent Rewards</h3>
+                        <Link href="/admin/rewards" style={{ fontSize: 11, color: "#059669", fontWeight: 600, textDecoration: "none" }}>View all</Link>
                     </div>
                     {loadingRewards ? (
-                        <p style={{ color: "#c4b5fd", fontSize: 13 }}>Loading…</p>
+                        <p style={{ color: "#6ee7b7", fontSize: 13 }}>Loading…</p>
                     ) : recentRewards.length === 0 ? (
                         <p style={{ color: "#9ca3af", fontSize: 13 }}>No rewards yet.</p>
                     ) : (
@@ -177,17 +177,17 @@ export default function AdminDashboardStat() {
                             {recentRewards.map((r) => (
                                 <div key={r.id} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                                     {r.image ? (
-                                        <img src={r.image} alt={r.name} style={{ width: 34, height: 34, borderRadius: 8, objectFit: "cover", border: "1px solid #eeecf9", flexShrink: 0 }} />
+                                        <img src={r.image} alt={r.name} style={{ width: 34, height: 34, borderRadius: 8, objectFit: "cover", border: "1px solid #d1fae5", flexShrink: 0 }} />
                                     ) : (
-                                        <div style={{ width: 34, height: 34, borderRadius: 8, background: "#ede9fe", color: "#7c3aed", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                        <div style={{ width: 34, height: 34, borderRadius: 8, background: "#d1fae5", color: "#059669", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                                             <IconGift />
                                         </div>
                                     )}
                                     <div style={{ flex: 1, minWidth: 0 }}>
-                                        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#1e1b4b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.name}</p>
+                                        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#064e3b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.name}</p>
                                         <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{r.companyName}</p>
                                     </div>
-                                    <span style={{ fontSize: 11, fontWeight: 600, color: "#7c3aed", background: "#ede9fe", borderRadius: 20, padding: "2px 9px", whiteSpace: "nowrap" }}>
+                                    <span style={{ fontSize: 11, fontWeight: 600, color: "#059669", background: "#d1fae5", borderRadius: 20, padding: "2px 9px", whiteSpace: "nowrap" }}>
                                         {r.pointRequired} pts
                                     </span>
                                 </div>

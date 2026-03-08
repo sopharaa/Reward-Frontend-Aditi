@@ -18,13 +18,13 @@ export default function Home() {
       {/* Navigation */}
       <nav className="bg-white shadow-sm border-b border-gray-200">
         <div className="px-6 py-4 flex justify-between items-center">
-          <div className="text-2xl font-extrabold text-purple-700">PointTrix</div>
+          <div className="text-2xl font-extrabold text-green-700">PointTrix</div>
 
           {/* Desktop links */}
           <ul className="hidden md:flex space-x-6">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} className="text-gray-700 hover:text-purple-600 font-medium transition duration-300">
+                <Link href={link.href} className="text-gray-700 hover:text-green-600 font-medium transition duration-300">
                   {link.label}
                 </Link>
               </li>
@@ -48,7 +48,7 @@ export default function Home() {
           <ul className="flex flex-col px-6 py-2 bg-white">
             {navLinks.map((link) => (
               <li key={link.href} className="border-b border-gray-100 last:border-0">
-                <Link href={link.href} onClick={() => setMenuOpen(false)} className="block py-3 text-gray-700 hover:text-purple-600 font-medium transition duration-300">
+                <Link href={link.href} onClick={() => setMenuOpen(false)} className="block py-3 text-gray-700 hover:text-green-600 font-medium transition duration-300">
                   {link.label}
                 </Link>
               </li>
@@ -59,7 +59,7 @@ export default function Home() {
 
       <div className="px-4 sm:px-8 py-8">
         {/* Hero Section */}
-        <section className="text-center py-12 sm:py-16 bg-gradient-to-br from-purple-500 to-indigo-600 text-white rounded-lg shadow-xl mb-12 px-6">
+        <section className="text-center py-12 sm:py-16 bg-gradient-to-br from-green-500 to-green-700 text-white rounded-lg shadow-xl mb-12 px-6">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight mb-6">
             Unlock Exclusive Rewards with Our Plugin System!
           </h1>
@@ -68,10 +68,10 @@ export default function Home() {
             Empower your users and grow your platform with our flexible reward solution.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/register" className="bg-white text-purple-700 px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+            <Link href="/register" className="bg-white text-green-700 px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
               Get Started Now
             </Link>
-            <Link href="/login" className="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:bg-purple-700 hover:border-purple-700 transition duration-300 transform hover:scale-105">
+            <Link href="/login" className="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:bg-green-800 hover:border-green-800 transition duration-300 transform hover:scale-105">
               Already a Member? Log In
             </Link>
           </div>
@@ -82,14 +82,14 @@ export default function Home() {
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-8">Key Features</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md text-center border border-gray-200">
-              <div className="text-purple-600 mb-4">
+              <div className="text-green-600 mb-4">
                 <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Seamless Integration</h3>
               <p className="text-gray-600">Easily add reward functionality to your existing platform as a plugin.</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md text-center border border-gray-200">
-              <div className="text-indigo-600 mb-4">
+              <div className="text-green-600 mb-4">
                 <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.503 4.618a1 1 0 00.95.691h4.862c.969 0 1.371 1.24.588 1.81l-3.937 2.863a1 1 0 00-.364 1.118l1.503 4.618c.3.921-.755 1.688-1.539 1.118l-3.937-2.863a1 1 0 00-1.176 0l-3.937 2.863c-.784.57-1.838-.197-1.539-1.118l1.503-4.618a1 1 0 00-.364-1.118L2.05 10.046c-.783-.57-.381-1.81.588-1.81h4.862a1 1 0 00.95-.691l1.503-4.618z" /></svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Points Management</h3>
@@ -111,7 +111,7 @@ export default function Home() {
           <p className="text-base sm:text-lg text-gray-700 mb-8 max-w-xl mx-auto">
             Join thousands of businesses enhancing their platforms with our intuitive and powerful reward system.
           </p>
-          <Link href="/register" className="inline-block bg-purple-600 text-white px-10 py-4 rounded-full font-bold text-xl shadow-lg hover:bg-purple-700 transition duration-300 transform hover:scale-105">
+          <Link href="/register" className="inline-block bg-green-600 text-white px-10 py-4 rounded-full font-bold text-xl shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105">
             Sign Up Today!
           </Link>
         </section>

@@ -16,7 +16,7 @@
 }
 
 .back-link {
-    color: #6b46c1;
+    color: #059669;
     font-weight: 500;
     text-decoration: none;
 }
@@ -43,7 +43,7 @@
 
 .user-table th {
     background-color: #f9f9f9;
-    color: #6b46c1;
+    color: #059669;
     font-weight: 600;
     text-transform: uppercase;
 }
@@ -63,12 +63,7 @@
 }
 
 .btn-adjust {
-    background-color: #0d6efd;
-    color: white;
-}
-
-.btn-adjust {
-    background-color: #6b46c1;
+    background-color: #059669;
     color: white;
 }
 
@@ -78,7 +73,7 @@
 }
 
 .adduser {
-    background-color: #6b46c1;
+    background-color: #059669;
 }
 
 
@@ -130,7 +125,7 @@
 
 .btn-confirm {
     padding: 10px 20px;
-    background-color: #6b46c1;
+    background-color: #059669;
     color: white;
     border: none;
     border-radius: 8px;

@@ -131,7 +131,7 @@ export default function AdminReward() {
     return (
         <div className="users-container">
             <div className="header">
-                <h1>Rewards Management 🎁</h1>
+                <h1>Rewards Management</h1>
                 <Link href="/admin/dashboard" className="back-link">← Back to Dashboard</Link>
             </div>
 
@@ -189,7 +189,7 @@ export default function AdminReward() {
                                     <td>{reward.pointRequired}</td>
                                     <td>{reward.companyName}</td>
                                     <td style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                        <button onClick={() => setEditTarget(reward)} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Edit</button>
+                                        <button onClick={() => setEditTarget(reward)} style={{ backgroundColor: "#059669", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Edit</button>
                                         <button onClick={() => setDeleteTarget(reward)} style={{ backgroundColor: "#dc2626", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer" }}>Delete</button>
                                     </td>
                                 </tr>
@@ -239,7 +239,7 @@ export default function AdminReward() {
 
                             <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "4px" }}>
                                 <button type="button" className="btn-cancel" onClick={() => { setShowCreate(false); resetCreateForm(); }} disabled={isCreating}>Cancel</button>
-                                <button type="submit" disabled={isCreating} style={{ backgroundColor: "#7c3aed", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
+                                <button type="submit" disabled={isCreating} style={{ backgroundColor: "#059669", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
                                     {isCreating ? "Creating…" : "Add Reward"}
                                 </button>
                             </div>
@@ -292,7 +292,7 @@ export default function AdminReward() {
 
                             <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "4px" }}>
                                 <button type="button" className="btn-cancel" onClick={() => setEditTarget(null)} disabled={isUpdating}>Cancel</button>
-                                <button type="submit" disabled={isUpdating} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
+                                <button type="submit" disabled={isUpdating} style={{ backgroundColor: "#059669", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
                                     {isUpdating ? "Saving…" : "Save Changes"}
                                 </button>
                             </div>

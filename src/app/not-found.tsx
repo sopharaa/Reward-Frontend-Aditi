@@ -34,7 +34,7 @@ export default function ErrorPage() {
             <div className="container mx-auto p-6 bg-white rounded-xl shadow-lg max-w-md w-full text-center">
                 {/* Navigation Menu (simplified for error page) */}
                 <nav className="flex justify-center items-center mb-10 pb-4 border-b border-gray-200">
-                    <div className="text-2xl font-extrabold text-purple-700">Reward System</div>
+                    <div className="text-2xl font-extrabold text-green-700">Reward System</div>
                 </nav>
 
                 <h1 className="text-6xl font-extrabold text-gray-800 mb-4">404</h1>
@@ -47,10 +47,10 @@ export default function ErrorPage() {
                 </p>
 
                 <div className="flex justify-center space-x-4">
-                    <a href="/" className="bg-purple-600 text-white px-6 py-3 rounded-md font-semibold shadow-md hover:bg-purple-700 transition duration-300">
+                    <a href="/" className="bg-green-600 text-white px-6 py-3 rounded-md font-semibold shadow-md hover:bg-green-700 transition duration-300">
                         Go to Home
                     </a>
-                    <button onClick={() => window.history.back()} className="border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-md font-semibold hover:bg-purple-50 hover:text-purple-700 transition duration-300">
+                    <button onClick={() => window.history.back()} className="border-2 border-green-600 text-green-600 px-6 py-3 rounded-md font-semibold hover:bg-green-50 hover:text-green-700 transition duration-300">
                         Go Back
                     </button>
                 </div>
@@ -61,7 +61,7 @@ export default function ErrorPage() {
                     <span className="close-button">&times;</span>
                     <h2 id="message-modal-title" className="text-2xl font-bold text-gray-800 mb-4"></h2>
                     <p id="message-modal-message" className="text-gray-700 mb-6"></p>
-                    <button className="bg-purple-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-purple-700 transition duration-300">Got It!</button>
+                    <button className="bg-green-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-green-700 transition duration-300">Got It!</button>
                 </div>
             </div>
         </>

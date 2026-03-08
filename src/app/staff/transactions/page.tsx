@@ -10,7 +10,7 @@ export default function StaffTransactions() {
                         <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Transaction History 📋</h1>
 
                         <section className="mb-10">
-                            <h2 className="text-2xl font-bold text-gray-700 mb-6 border-b-2 border-purple-300 pb-3">All Transactions</h2>
+                            <h2 className="text-2xl font-bold text-gray-700 mb-6 border-b-2 border-green-300 pb-3">All Transactions</h2>
                             <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-100 text-gray-700 text-sm font-semibold">
@@ -34,7 +34,7 @@ export default function StaffTransactions() {
                         </section>
 
                         <div className="text-center mt-6">
-                            <a href="/staff/orders" className="text-purple-600 hover:text-purple-500 font-medium">Back to Staff Dashboard</a>
+                            <a href="/staff/orders" className="text-green-600 hover:text-green-500 font-medium">Back to Staff Dashboard</a>
                         </div>
                     </div>
                 </main>

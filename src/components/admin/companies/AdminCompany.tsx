@@ -95,7 +95,7 @@ export default function AdminCompany() {
     <div className="users-container">
       {/* Header */}
       <div className="header">
-        <h1>Company Management 👥</h1>
+        <h1>Company Management</h1>
         <Link href="/admin/dashboard" className="back-link">← Back to Dashboard</Link>
       </div>
 
@@ -153,8 +153,8 @@ export default function AdminCompany() {
                     <td>{company.type}</td>
                     <td>{company.description}</td>
                     <td style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                      <button onClick={() => setViewCompany(company)} style={{ backgroundColor: "#6b46c1", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Info</button>
-                      <button onClick={() => setEditTarget(company)} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Edit</button>
+                      <button onClick={() => setViewCompany(company)} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Info</button>
+                      <button onClick={() => setEditTarget(company)} style={{ backgroundColor: "#059669", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer", marginRight: "6px" }}>Edit</button>
                       <button onClick={() => setDeleteTarget(company)} style={{ backgroundColor: "#dc2626", color: "white", border: "none", borderRadius: "6px", padding: "6px 14px", cursor: "pointer" }}>Delete</button>
                     </td>
                   </tr>
@@ -192,7 +192,7 @@ export default function AdminCompany() {
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "4px" }}>
                 <button type="button" className="btn-cancel" onClick={() => { setShowCreate(false); resetCreateForm(); }} disabled={isCreating}>Cancel</button>
-                <button type="submit" disabled={isCreating} style={{ backgroundColor: "#7c3aed", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
+                <button type="submit" disabled={isCreating} style={{ backgroundColor: "#059669", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
                   {isCreating ? "Creating…" : "Add Company"}
                 </button>
               </div>
@@ -238,7 +238,7 @@ export default function AdminCompany() {
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
                 <button type="button" className="btn-cancel" onClick={() => setEditTarget(null)} disabled={isUpdating}>Cancel</button>
-                <button type="submit" disabled={isUpdating} style={{ backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
+                <button type="submit" disabled={isUpdating} style={{ backgroundColor: "#059669", color: "white", border: "none", borderRadius: "8px", padding: "10px 20px", cursor: "pointer" }}>
                   {isUpdating ? "Saving…" : "Save Changes"}
                 </button>
               </div>

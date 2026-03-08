@@ -1,6 +1,11 @@
 "use client";
 import { useState } from "react";
 import StaffHeader from "@/components/layouts/StaffHeader";
+import {
+    useGetStaffProfileQuery,
+    useGetCompanyUsersQuery,
+    useCreateOrderMutation,
+} from "@/store/api/staffApi";
 
 interface OrderItem {
     id: number;
@@ -11,9 +16,17 @@ interface OrderItem {
 export default function StaffProcessOrders() {
     const [items, setItems] = useState<OrderItem[]>([{ id: 1, name: "", price: "" }]);
     const [counter, setCounter] = useState(2);
-    const [manualPoints, setManualPoints] = useState(0);
+    const [selectedUserId, setSelectedUserId] = useState<string>("");
+    const [successMsg, setSuccessMsg] = useState<string | null>(null);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+    const { data: profile } = useGetStaffProfileQuery();
+    const { data: companyUsers = [], isLoading: loadingUsers } = useGetCompanyUsersQuery();
+    const [createOrder, { isLoading: submitting }] = useCreateOrderMutation();
 
     const total = items.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
+    // Auto-calculate points: 1 point per $10 spent
+    const autoPoints = Math.round(total * 0.1);
 
     const addItem = () => {
         setItems((prev) => [...prev, { id: counter, name: "", price: "" }]);
@@ -25,64 +38,142 @@ export default function StaffProcessOrders() {
     };
 
     const updateItem = (id: number, field: "name" | "price", value: string) => {
-        setItems((prev) => prev.map((item) => item.id === id ? { ...item, [field]: value } : item));
+        setItems((prev) =>
+            prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+        );
     };
 
     const clearOrder = () => {
         setItems([{ id: 1, name: "", price: "" }]);
         setCounter(2);
-        setManualPoints(0);
+        setSelectedUserId("");
+        setSuccessMsg(null);
+        setErrorMsg(null);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSuccessMsg(null);
+        setErrorMsg(null);
+
+        if (!selectedUserId) {
+            setErrorMsg("Please select a customer.");
+            return;
+        }
+
+        const validItems = items.filter((i) => i.name.trim() !== "");
+        if (validItems.length === 0) {
+            setErrorMsg("Please add at least one order item.");
+            return;
+        }
+
+        if (total <= 0) {
+            setErrorMsg("Total amount must be greater than 0.");
+            return;
+        }
+
+        try {
+            const result = await createOrder({
+                userId: Number(selectedUserId),
+                totalAmount: total,
+                orderItems: validItems.map((i) => ({
+                    name: i.name,
+                    price: parseFloat(i.price) || 0,
+                })),
+            }).unwrap();
+
+            setSuccessMsg(
+                `✅ Order #${result.id} processed! ${result.pointsEarned} points awarded to ${result.userName}.`
+            );
+            clearOrder();
+        } catch (err: unknown) {
+            const error = err as { data?: { message?: string } };
+            setErrorMsg(error?.data?.message || "Failed to process order. Please try again.");
+        }
     };
 
     return (
         <>
             <StaffHeader />
 
-            <div className="min-h-screen bg-gray-100 pt-6 px-4 sm:px-8 pb-10">
-                <div className="max-w-6xl mx-auto bg-white p-8 rounded-2xl shadow-xl">
-                    <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Customer Order (Staff Panel)</h1>
+            <div className="min-h-screen bg-gray-100 py-10 px-4 sm:px-8">
+                <div className="max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow-xl">
+                    <h1 className="text-4xl font-bold text-center text-gray-800 mb-3">
+                        Process Order
+                    </h1>
+                    <p className="text-center text-gray-500 mb-10 text-base">
+                        Staff: <span className="font-semibold text-green-700">{profile?.name}</span> &nbsp;|&nbsp;
+                        Company: <span className="font-semibold text-green-700">{profile?.companyName ?? "—"}</span>
+                    </p>
 
-                    <form method="POST" action="/api/staff/process-order">
-                        <div className="mb-6">
-                            <label className="block text-gray-700 font-semibold mb-2">Company:</label>
-                            <select disabled className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed">
-                                <option>Company Name</option>
-                            </select>
+                    {successMsg && (
+                        <div className="mb-6 p-4 bg-green-50 border border-green-300 text-green-800 rounded-lg text-sm">
+                            {successMsg}
+                        </div>
+                    )}
+                    {errorMsg && (
+                        <div className="mb-6 p-4 bg-red-50 border border-red-300 text-red-700 rounded-lg text-sm">
+                            {errorMsg}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit}>
+
+                        {/* Customer Select */}
+                        <div className="mb-7">
+                            <label htmlFor="user_id" className="block text-gray-700 font-semibold text-base mb-2">
+                                Select Customer
+                            </label>
+                            {loadingUsers ? (
+                                <div className="text-base text-gray-400 p-4 border rounded-lg">Loading customers…</div>
+                            ) : (
+                                <select
+                                    id="user_id"
+                                    value={selectedUserId}
+                                    onChange={(e) => setSelectedUserId(e.target.value)}
+                                    className="w-full p-4 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                                    required
+                                >
+                                    <option value="">— Choose a Customer —</option>
+                                    {companyUsers.map((u) => (
+                                        <option key={u.id} value={u.id}>
+                                            {u.name} ({u.email}) — {u.points} pts
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
                         </div>
 
-                        <div className="mb-6">
-                            <label htmlFor="user_id" className="block text-gray-700 font-semibold mb-2">Select User</label>
-                            <select id="user_id" name="user_id" className="w-full p-3 border border-gray-300 rounded-lg" required>
-                                <option value="" disabled>-- Choose a User --</option>
-                            </select>
-                        </div>
-
-                        <div className="mb-6">
-                            <h2 className="text-xl font-semibold text-purple-700 mb-3">Order Items</h2>
-                            <div className="space-y-3">
+                        {/* Order Items */}
+                        <div className="mb-7">
+                            <h2 className="text-2xl font-semibold text-green-700 mb-4">Order Items</h2>
+                            <div className="space-y-4">
                                 {items.map((item, index) => (
-                                    <div key={item.id} className="flex gap-3 items-center">
+                                    <div key={item.id} className="flex gap-4 items-center">
                                         <input
                                             type="text"
                                             value={item.name}
                                             onChange={(e) => updateItem(item.id, "name", e.target.value)}
-                                            placeholder={`Item ${index + 1}`}
-                                            className="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
+                                            placeholder={`Item ${index + 1} name`}
+                                            className="flex-grow p-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
                                         />
-                                        <input
-                                            type="number"
-                                            value={item.price}
-                                            onChange={(e) => updateItem(item.id, "price", e.target.value)}
-                                            placeholder="0.00"
-                                            min="0"
-                                            step="0.01"
-                                            className="w-32 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400"
-                                        />
+                                        <div className="relative w-40">
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base">$</span>
+                                            <input
+                                                type="number"
+                                                value={item.price}
+                                                onChange={(e) => updateItem(item.id, "price", e.target.value)}
+                                                placeholder="0.00"
+                                                min="0"
+                                                step="0.01"
+                                                className="w-full pl-7 pr-3 py-3 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
+                                            />
+                                        </div>
                                         <button
                                             type="button"
                                             onClick={() => removeItem(item.id)}
                                             disabled={items.length === 1}
-                                            className="bg-red-500 text-white px-3 py-2 rounded-md hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed"
+                                            className="bg-red-500 text-white px-4 py-3 text-base rounded-md hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed"
                                         >
                                             ✕
                                         </button>
@@ -92,41 +183,39 @@ export default function StaffProcessOrders() {
                             <button
                                 type="button"
                                 onClick={addItem}
-                                className="w-full mt-4 bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition"
+                                className="w-full mt-5 border-2 border-dashed border-green-400 text-green-600 py-3 text-base rounded-md hover:bg-green-50 transition font-medium"
                             >
                                 + Add Item
                             </button>
                         </div>
 
-                        <div className="border-t pt-4 mt-6">
-                            <div className="flex justify-between mb-4 text-lg">
-                                <span>Total:</span>
-                                <span className="font-bold text-purple-700">${total.toFixed(2)}</span>
+                        {/* Summary */}
+                        <div className="border-t pt-6 mt-5 bg-gray-50 rounded-xl px-6 pb-6">
+                            <div className="flex justify-between items-center mb-3 text-lg text-gray-700">
+                                <span>Subtotal ({items.length} item{items.length !== 1 ? "s" : ""})</span>
+                                <span className="font-semibold">${total.toFixed(2)}</span>
                             </div>
-                            <div className="flex justify-between items-center mb-2">
-                                <label className="text-lg font-semibold text-gray-800">Points to Award:</label>
-                                <input
-                                    type="number"
-                                    name="points_awarded"
-                                    value={manualPoints}
-                                    onChange={(e) => setManualPoints(Number(e.target.value))}
-                                    min="0"
-                                    step="1"
-                                    className="w-32 text-right p-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-green-700 font-bold"
-                                />
+                            <div className="flex justify-between items-center text-lg text-gray-700">
+                                <span>Points to be Awarded</span>
+                                <span className="font-bold text-green-700 text-xl">+{autoPoints} pts</span>
                             </div>
+                            <p className="text-sm text-gray-400 mt-2">1 point per $10 spent</p>
                         </div>
 
-                        {/* Hidden serialised fields */}
-                        <input type="hidden" name="order_items" value={JSON.stringify(items)} />
-                        <input type="hidden" name="total" value={total.toFixed(2)} />
-
-                        <div className="mt-6 flex gap-4">
-                            <button type="submit" className="flex-1 bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition">
-                                Process Order
+                        <div className="mt-8 flex gap-5">
+                            <button
+                                type="submit"
+                                disabled={submitting}
+                                className="flex-1 bg-green-600 text-white py-4 text-lg rounded-lg hover:bg-green-700 transition font-semibold disabled:opacity-60"
+                            >
+                                {submitting ? "Processing…" : "Process Order"}
                             </button>
-                            <button type="button" onClick={clearOrder} className="flex-1 bg-gray-400 text-white py-3 rounded-md hover:bg-gray-500 transition">
-                                Clear Order
+                            <button
+                                type="button"
+                                onClick={clearOrder}
+                                className="flex-1 bg-gray-200 text-gray-700 py-4 text-lg rounded-lg hover:bg-gray-300 transition font-semibold"
+                            >
+                                Clear
                             </button>
                         </div>
                     </form>

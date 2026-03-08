@@ -18,7 +18,7 @@ export default function Register() {
     const [agreed, setAgreed] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const inputClass = "mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm";
+    const inputClass = "mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm";
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -41,10 +41,10 @@ export default function Register() {
             <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
                 {/* Brand */}
                 <div className="flex flex-col items-center mb-6">
-                    <div className="w-14 h-14 rounded-full bg-purple-600 flex items-center justify-center mb-3">
+                    <div className="w-14 h-14 rounded-full bg-green-600 flex items-center justify-center mb-3">
                         <span className="text-white text-2xl font-extrabold">P</span>
                     </div>
-                    <h1 className="text-xl font-extrabold text-purple-700">PointTrix</h1>
+                    <h1 className="text-xl font-extrabold text-green-700">PointTrix</h1>
                 </div>
 
                 <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Create Your Account</h2>
@@ -83,26 +83,25 @@ export default function Register() {
                     </div>
                     <div className="flex items-start gap-2">
                         <input id="terms" type="checkbox" required checked={agreed} onChange={(e) => setAgreed(e.target.checked)}
-                            className="mt-1 h-4 w-4 text-purple-600 border-gray-300 rounded" />
+                            className="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded" />
                         <label htmlFor="terms" className="text-sm text-gray-700">
                             I agree to the{" "}
-                            <Link href="/terms" className="text-purple-600 hover:underline font-medium">Terms and Conditions</Link>
+                            <Link href="/terms" className="text-green-600 hover:underline font-medium">Terms and Conditions</Link>
                             {" "}and{" "}
-                            <Link href="/privacy-policy" className="text-purple-600 hover:underline font-medium">Privacy Policy</Link>.
+                            <Link href="/privacy-policy" className="text-green-600 hover:underline font-medium">Privacy Policy</Link>.
                         </label>
                     </div>
                     <button type="submit" disabled={isLoading}
-                        className="w-full py-3 px-4 bg-purple-600 text-white font-semibold rounded-md hover:bg-purple-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                        className="w-full py-3 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                         {isLoading ? "Registering..." : "Register"}
                     </button>
                 </form>
 
                 <p className="mt-6 text-center text-sm text-gray-600">
                     Already have an account?{" "}
-                    <Link href="/login" className="font-medium text-purple-600 hover:text-purple-500">Login here</Link>
+                    <Link href="/login" className="font-medium text-green-600 hover:text-green-500">Login here</Link>
                 </p>
             </div>
         </div>
     );
 }
-

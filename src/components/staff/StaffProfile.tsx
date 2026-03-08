@@ -1,12 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import UserHeader from "@/components/layouts/UserHeader";
-import { useGetUserProfileQuery, useUpdateUserProfileMutation } from "@/store/api/userApi";
+import StaffHeader from "@/components/layouts/StaffHeader";
+import { useGetStaffProfileQuery, useUpdateStaffProfileMutation } from "@/store/api/staffApi";
 
-export default function Profile() {
-    const { data: user, isLoading } = useGetUserProfileQuery();
-    const [updateUserProfile, { isLoading: isSaving }] = useUpdateUserProfileMutation();
+export default function StaffProfile() {
+    const { data: staff, isLoading } = useGetStaffProfileQuery();
+    const [updateStaffProfile, { isLoading: isSaving }] = useUpdateStaffProfileMutation();
 
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
@@ -16,12 +16,12 @@ export default function Profile() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (user?.name) {
-            setName(user.name);
+        if (staff?.name) {
+            setName(staff.name);
         }
-    }, [user?.name]);
+    }, [staff?.name]);
 
-    const initial = user?.name?.charAt(0).toUpperCase() ?? "U";
+    const initial = staff?.name?.charAt(0).toUpperCase() ?? "S";
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,7 +44,7 @@ export default function Profile() {
         }
 
         try {
-            await updateUserProfile(formData).unwrap();
+            await updateStaffProfile(formData).unwrap();
             setSuccess("Profile updated successfully!");
             setPassword("");
             setConfirmPassword("");
@@ -55,42 +55,49 @@ export default function Profile() {
         }
     };
 
-    const inputClass = "block w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm";
-    const readonlyClass = "block w-full border border-gray-200 rounded-md px-4 py-2 bg-gray-100 text-gray-500 cursor-not-allowed sm:text-sm";
+    const inputClass =
+        "block w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm";
+    const readonlyClass =
+        "block w-full border border-gray-200 rounded-md px-4 py-2 bg-gray-100 text-gray-500 cursor-not-allowed sm:text-sm";
 
     return (
         <div className="w-full min-h-screen bg-gray-50">
-            <UserHeader />
+            <StaffHeader />
 
             <div className="w-[85%] mx-auto pt-24 pb-8">
-                <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Your Profile 👤</h1>
+                <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Staff Profile 👤</h1>
 
-                {/* User Banner */}
+                {/* Staff Banner */}
                 <div className="bg-gradient-to-r from-green-600 to-green-800 text-white p-6 rounded-lg shadow-md mb-8 flex flex-col md:flex-row items-center justify-between">
                     <div className="flex items-center mb-4 md:mb-0">
                         {isLoading ? (
                             <div className="w-20 h-20 rounded-full border-2 border-white mr-4 bg-green-400 animate-pulse" />
-                        ) : user?.profileImage ? (
-                            <img src={user.profileImage} alt={user.name} className="w-20 h-20 rounded-full border-2 border-white mr-4 object-cover" />
+                        ) : staff?.profileImage ? (
+                            <img
+                                src={staff.profileImage}
+                                alt={staff.name}
+                                className="w-20 h-20 rounded-full border-2 border-white mr-4 object-cover"
+                            />
                         ) : (
                             <div className="w-20 h-20 rounded-full border-2 border-white mr-4 bg-white/20 flex items-center justify-center text-3xl font-extrabold">
                                 {initial}
                             </div>
                         )}
                         <div>
-                            <p className="text-2xl font-semibold">{isLoading ? "Loading…" : (user?.name ?? "User")}</p>
-                            <p className="text-sm opacity-90">{isLoading ? "…" : (user?.email ?? "")}</p>
+                            <p className="text-2xl font-semibold">{isLoading ? "Loading…" : (staff?.name ?? "Staff")}</p>
+                            <p className="text-sm opacity-90">{isLoading ? "…" : (staff?.email ?? "")}</p>
+                            <p className="text-sm opacity-75 mt-1">
+                                Company: {isLoading ? "…" : (staff?.companyName ?? "N/A")}
+                            </p>
                         </div>
-                    </div>
-                    <div className="text-right">
-                        <span className="text-3xl font-bold">Points: {isLoading ? "…" : (user?.points ?? 0)}</span>
-                        <p className="text-sm opacity-90 mt-1">Current points balance</p>
                     </div>
                 </div>
 
                 {/* Personal Details Form */}
                 <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200 mb-8">
-                    <h2 className="text-2xl font-bold text-gray-700 mb-6 border-b-2 border-green-300 pb-3">Personal Details</h2>
+                    <h2 className="text-2xl font-bold text-gray-700 mb-6 border-b-2 border-green-300 pb-3">
+                        Personal Details
+                    </h2>
 
                     {success && (
                         <p className="mb-5 text-green-700 text-sm bg-green-50 border border-green-200 rounded-md py-3 px-4">
@@ -134,9 +141,23 @@ export default function Profile() {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                             <div className="relative">
-                                <input type="email" value={user?.email ?? ""} readOnly className={`${readonlyClass} pr-10`} />
+                                <input
+                                    type="email"
+                                    value={staff?.email ?? ""}
+                                    readOnly
+                                    className={`${readonlyClass} pr-10`}
+                                />
                                 <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="w-4 h-4"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
                                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                                         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                     </svg>
@@ -148,9 +169,23 @@ export default function Profile() {
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
                             <div className="relative">
-                                <input type="text" value={isLoading ? "…" : (user?.companyName ?? "N/A")} readOnly className={`${readonlyClass} pr-10`} />
+                                <input
+                                    type="text"
+                                    value={isLoading ? "…" : (staff?.companyName ?? "N/A")}
+                                    readOnly
+                                    className={`${readonlyClass} pr-10`}
+                                />
                                 <span className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="w-4 h-4"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
                                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                                         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                     </svg>
@@ -158,7 +193,7 @@ export default function Profile() {
                             </div>
                         </div>
 
-                        {/* Password */}
+                        {/* New Password */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 New Password
@@ -172,6 +207,8 @@ export default function Profile() {
                                 placeholder="••••••••"
                             />
                         </div>
+
+                        {/* Confirm Password */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
                             <input
@@ -196,7 +233,7 @@ export default function Profile() {
                 </div>
 
                 <div className="text-center mb-8">
-                    <Link href="/dashboard" className="text-green-600 hover:text-green-500 font-medium">
+                    <Link href="/staff/orders" className="text-green-600 hover:text-green-500 font-medium">
                         ← Back to Dashboard
                     </Link>
                 </div>

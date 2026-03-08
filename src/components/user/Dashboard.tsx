@@ -13,14 +13,14 @@ export default function Dashboard() {
             <div className="w-full min-h-screen bg-gray-50">
                 <UserHeader />
 
-                <div className="w-[85%] mx-auto py-8">
+                <div className="w-[85%] mx-auto pt-24 pb-8">
                     <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">Welcome 👋</h1>
 
                     {/* User Info Banner */}
-                    <div className="bg-gradient-to-r from-purple-600 to-indigo-700 text-white p-6 rounded-lg shadow-md mb-8 flex flex-col md:flex-row items-center justify-between">
+                    <div className="bg-gradient-to-r from-green-600 to-green-800 text-white p-6 rounded-lg shadow-md mb-8 flex flex-col md:flex-row items-center justify-between">
                         <div className="flex items-center mb-4 md:mb-0">
                             {isLoading ? (
-                                <div className="w-16 h-16 rounded-full border-2 border-white mr-4 bg-purple-400 animate-pulse" />
+                                <div className="w-16 h-16 rounded-full border-2 border-white mr-4 bg-green-400 animate-pulse" />
                             ) : user?.profileImage ? (
                                 <img src={user.profileImage} alt={user.name} className="w-16 h-16 rounded-full border-2 border-white mr-4 object-cover" />
                             ) : (
@@ -32,7 +32,7 @@ export default function Dashboard() {
                                 <p className="text-xl font-semibold">
                                     {isLoading ? "Loading…" : (user?.name ?? "User")}
                                 </p>
-                                <p className="text-sm text-purple-200 mt-1">
+                                <p className="text-sm text-green-200 mt-1">
                                     Company: {isLoading ? "…" : (user?.companyName ?? "N/A")}
                                 </p>
                             </div>
@@ -47,7 +47,7 @@ export default function Dashboard() {
 
                     {/* Quick Links Section */}
                     <section className="mb-10">
-                        <h2 className="text-3xl font-bold text-gray-700 mb-6 border-b-2 border-purple-300 pb-3">Quick Actions</h2>
+                        <h2 className="text-3xl font-bold text-gray-700 mb-6 border-b-2 border-green-300 pb-3">Quick Actions</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center max-w-3xl mx-auto">
                             <Link href="/redeem" className="block p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition duration-300 text-center border border-gray-200">
                                 <div className="text-indigo-600 mb-3">
@@ -73,10 +73,10 @@ export default function Dashboard() {
 
                     {/* How to Use Section */}
                     <section className="mb-12">
-                        <h2 className="text-3xl font-bold text-gray-700 mb-8 border-b-2 border-purple-300 pb-3 text-center">How to Use PointTrix</h2>
-                        <div className="max-w-2xl mx-auto relative border-l-4 border-purple-400 pl-6 space-y-10">
+                        <h2 className="text-3xl font-bold text-gray-700 mb-8 border-b-2 border-green-300 pb-3 text-center">How to Use PointTrix</h2>
+                        <div className="max-w-2xl mx-auto relative border-l-4 border-green-400 pl-6 space-y-10">
                             <div className="relative">
-                                <div className="absolute -left-7 top-1.5 bg-purple-400 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                                <div className="absolute -left-7 top-1.5 bg-green-400 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">1</div>
                                 <h3 className="text-lg font-semibold text-gray-800">Buy Item 🛒</h3>
                                 <p className="text-sm text-gray-600 mt-1">Start your journey by making a purchase through your company&apos;s store. Whether it&apos;s office supplies, apparel, or electronics, every eligible item counts. Simply log in, shop as usual, and make sure your purchase is linked to your PointTrix account. Once your order is confirmed, you&apos;ll be ready to earn.</p>
                             </div>
@@ -86,7 +86,7 @@ export default function Dashboard() {
                                 <p className="text-sm text-gray-600 mt-1">After your purchase, points are automatically credited to your account based on the order amount. The more you shop, the more points you accumulate. These points reflect your activity and loyalty, giving you the power to unlock various benefits and rewards over time.</p>
                             </div>
                             <div className="relative">
-                                <div className="absolute -left-7 top-1.5 bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                                <div className="absolute -left-7 top-1.5 bg-green-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold">3</div>
                                 <h3 className="text-lg font-semibold text-gray-800">Use Points 🎯</h3>
                                 <p className="text-sm text-gray-600 mt-1">Once you&apos;ve earned enough points, you can start exploring our rewards catalog. From gift cards and gadgets to exclusive services, there&apos;s something for everyone. Select the item you want and apply your points during the redemption process.</p>
                             </div>
@@ -97,7 +97,7 @@ export default function Dashboard() {
                             </div>
                         </div>
                         <div className="text-center mt-10">
-                            <Link href="/history" className="inline-block text-purple-600 hover:text-purple-500 font-medium">View Your History →</Link>
+                            <Link href="/history" className="inline-block text-green-600 hover:text-green-500 font-medium">View Your History →</Link>
                         </div>
                     </section>
                 </div>
@@ -105,4 +105,3 @@ export default function Dashboard() {
         </>
     );
 }
-

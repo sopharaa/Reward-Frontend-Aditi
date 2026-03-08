@@ -35,13 +35,13 @@ export default function Terms() {
             <div className="container mx-auto p-6 bg-white rounded-xl shadow-lg max-w-4xl w-full">
                 {/* Navigation Menu */}
                 <nav className="flex justify-between items-center mb-10 pb-4 border-b border-gray-200">
-                    <div className="text-2xl font-extrabold text-purple-700">Reward System</div>
+                    <div className="text-2xl font-extrabold text-green-700">Reward System</div>
                     <ul className="flex space-x-6">
-                        <li><Link href="/" className="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Home</Link></li>
-                        <li><Link href="/login" className="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Login</Link></li>
-                        <li><Link href="/register" className="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Register</Link></li>
-                        <li><Link href="/terms" className="text-purple-600 font-medium transition duration-300">Terms</Link></li>
-                        <li><Link href="/privacy-policy" className="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Privacy</Link></li>
+                        <li><Link href="/" className="text-gray-700 hover:text-green-600 font-medium transition duration-300">Home</Link></li>
+                        <li><Link href="/login" className="text-gray-700 hover:text-green-600 font-medium transition duration-300">Login</Link></li>
+                        <li><Link href="/register" className="text-gray-700 hover:text-green-600 font-medium transition duration-300">Register</Link></li>
+                        <li><Link href="/terms" className="text-green-600 font-medium transition duration-300">Terms</Link></li>
+                        <li><Link href="/privacy-policy" className="text-gray-700 hover:text-green-600 font-medium transition duration-300">Privacy</Link></li>
                     </ul>
                 </nav>
 
@@ -103,7 +103,7 @@ export default function Terms() {
                 </section>
 
                 <div className="text-center mt-10">
-                    <Link href="/register" className="text-purple-600 hover:text-purple-500 font-medium">Back to Registration</Link>
+                    <Link href="/register" className="text-green-600 hover:text-green-500 font-medium">Back to Registration</Link>
                 </div>
             </div>
 
@@ -112,13 +112,9 @@ export default function Terms() {
                     <span className="close-button">&times;</span>
                     <h2 id="message-modal-title" className="text-2xl font-bold text-gray-800 mb-4"></h2>
                     <p id="message-modal-message" className="text-gray-700 mb-6"></p>
-                    <button className="bg-purple-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-purple-700 transition duration-300">Got It!</button>
+                    <button className="bg-green-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-green-700 transition duration-300">Got It!</button>
                 </div>
             </div>
         </>
     );
 }
-
-
-
-

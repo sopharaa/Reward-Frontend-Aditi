@@ -37,7 +37,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pr
             border: "1px solid #ccc",
             borderRadius: "6px",
             cursor: "pointer",
-            backgroundColor: page === currentPage ? "#6b46c1" : "white",
+            backgroundColor: page === currentPage ? "#059669" : "white",
             color: page === currentPage ? "white" : "#374151",
             fontWeight: page === currentPage ? "bold" : "normal",
           }}

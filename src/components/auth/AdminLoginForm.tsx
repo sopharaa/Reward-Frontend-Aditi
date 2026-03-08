@@ -97,7 +97,7 @@ export default function AdminLoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-2 px-4 bg-purple-600 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2 px-4 bg-emerald-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? "Signing in..." : "Sign In"}
         </button>
@@ -105,7 +105,7 @@ export default function AdminLoginForm() {
 
       <div className="mt-6 text-center text-sm text-gray-500">
         Not an admin?{" "}
-        <Link href="/" className="text-purple-600 hover:underline">
+        <Link href="/" className="text-emerald-700 hover:underline">
           Go back
         </Link>
       </div>

@@ -30,7 +30,7 @@ export default function StaffHeader() {
             <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
                     {/* Brand */}
-                    <Link href="/staff/orders" className="text-2xl font-extrabold text-indigo-700">
+                    <Link href="/staff/orders" className="text-2xl font-extrabold text-green-700">
                         PointTrix Staff
                     </Link>
 
@@ -42,8 +42,8 @@ export default function StaffHeader() {
                                     href={link.href}
                                     className={`text-sm font-medium transition duration-300 ${
                                         pathname === link.href
-                                            ? "text-indigo-700 font-bold"
-                                            : "text-gray-700 hover:text-indigo-600"
+                                            ? "text-green-700 font-bold"
+                                            : "text-gray-700 hover:text-green-600"
                                     }`}
                                 >
                                     {link.label}
@@ -82,8 +82,8 @@ export default function StaffHeader() {
                                     onClick={closeMenu}
                                     className={`block py-3 font-medium transition duration-300 ${
                                         pathname === link.href
-                                            ? "text-indigo-700 font-bold"
-                                            : "text-gray-700 hover:text-indigo-600"
+                                            ? "text-green-700 font-bold"
+                                            : "text-gray-700 hover:text-green-600"
                                     }`}
                                 >
                                     {link.label}

@@ -36,10 +36,10 @@ export default function StaffLoginForm() {
         <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
             {/* Logo / Brand */}
             <div className="flex flex-col items-center mb-6">
-                <div className="w-14 h-14 rounded-full bg-indigo-600 flex items-center justify-center mb-3">
+                <div className="w-14 h-14 rounded-full bg-green-600 flex items-center justify-center mb-3">
                     <span className="text-white text-2xl font-extrabold">P</span>
                 </div>
-                <h1 className="text-xl font-extrabold text-indigo-700 tracking-wide">PointTrix</h1>
+                <h1 className="text-xl font-extrabold text-green-700 tracking-wide">PointTrix</h1>
                 <p className="text-sm text-gray-500 mt-1">Staff Portal</p>
             </div>
 
@@ -61,7 +61,7 @@ export default function StaffLoginForm() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                         placeholder="staff@example.com"
                     />
                 </div>
@@ -75,7 +75,7 @@ export default function StaffLoginForm() {
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                         placeholder="Enter your password"
                     />
                 </div>
@@ -83,7 +83,7 @@ export default function StaffLoginForm() {
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isLoading ? "Signing in..." : "Sign In"}
                 </button>
@@ -91,7 +91,7 @@ export default function StaffLoginForm() {
 
             <div className="mt-6 text-center text-sm text-gray-500">
                 Not a staff member?{" "}
-                <Link href="/" className="text-indigo-600 hover:underline">
+                <Link href="/" className="text-green-600 hover:underline">
                     Go back
                 </Link>
             </div>
