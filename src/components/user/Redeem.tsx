@@ -35,7 +35,7 @@ export default function Redeem() {
         if (!selectedReward) return;
         try {
             await redeemReward(selectedReward.id).unwrap();
-            showToast(`🎉 "${selectedReward.name}" redeemed successfully!`, "success");
+            showToast(`"${selectedReward.name}" redeemed successfully!`, "success");
             refetchUser();
         } catch (err: unknown) {
             const msg =
