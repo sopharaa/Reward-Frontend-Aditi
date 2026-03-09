@@ -7,16 +7,10 @@ export function userMiddleware(request: NextRequest) {
     const isProtected = ["/dashboard", "/redeem", "/history", "/profile"].some((p) =>
         pathname.startsWith(p)
     );
-    const isAuthPage = pathname === "/login" || pathname === "/register";
 
-    // Redirect unauthenticated users away from protected routes
+    // Redirect unauthenticated users to home (login modal is on home page)
     if (isProtected && !token) {
-        return NextResponse.redirect(new URL("/login", request.url));
-    }
-
-    // Redirect already-logged-in users away from login/register
-    if (isAuthPage && token) {
-        return NextResponse.redirect(new URL("/dashboard", request.url));
+        return NextResponse.redirect(new URL("/", request.url));
     }
 
     return NextResponse.next();

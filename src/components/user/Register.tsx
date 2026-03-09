@@ -5,7 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUserRegisterMutation, useGetPublicCompaniesQuery } from "@/store/api/adminApi";
 
-export default function Register() {
+interface RegisterProps {
+    onClose?: () => void;
+    onSwitchToLogin?: () => void;
+}
+
+export default function Register({ onClose, onSwitchToLogin }: RegisterProps = {}) {
     const router = useRouter();
     const { data: companies, isLoading: companiesLoading } = useGetPublicCompaniesQuery();
     const [userRegister, { isLoading }] = useUserRegisterMutation();
@@ -29,41 +34,55 @@ export default function Register() {
         }
         try {
             await userRegister({ companyId: Number(companyId), name, email, password, confirmPassword }).unwrap();
-            router.push("/login");
+            if (onSwitchToLogin) {
+                onSwitchToLogin();
+            } else {
+                router.push("/");
+            }
         } catch (err: unknown) {
             const e = err as { data?: { message?: string } };
             setError(e?.data?.message ?? "Registration failed. Please try again.");
         }
     };
 
-    return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-5">
-            <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-                {/* Brand */}
-                <div className="flex flex-col items-center mb-6">
-                    <div className="w-14 h-14 rounded-full bg-green-600 flex items-center justify-center mb-3">
-                        <span className="text-white text-2xl font-extrabold">P</span>
-                    </div>
-                    <h1 className="text-xl font-extrabold text-green-700">PointTrix</h1>
+    const card = (
+        <div className="bg-white shadow-lg rounded-xl p-6 w-full relative">
+            {onClose && (
+                <button
+                    onClick={onClose}
+                    className="absolute top-3 right-4 text-gray-400 hover:text-gray-600 text-2xl leading-none"
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
+            )}
+            {/* Brand */}
+            <div className="flex flex-col items-center mb-4">
+                <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center mb-2">
+                    <span className="text-white text-lg font-extrabold">P</span>
                 </div>
+                <h1 className="text-base font-extrabold text-green-700">PointTrix</h1>
+            </div>
 
-                <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Create Your Account</h2>
+            <h2 className="text-xl font-bold text-center text-gray-800 mb-4">Create Your Account</h2>
 
-                {error && (
-                    <p className="mb-4 text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-md py-2 px-3">
-                        {error}
-                    </p>
-                )}
+            {error && (
+                <p className="mb-3 text-red-500 text-sm text-center bg-red-50 border border-red-200 rounded-md py-2 px-3">
+                    {error}
+                </p>
+            )}
 
-                <form className="space-y-5" onSubmit={handleSubmit}>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                        <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="John Doe" />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                        <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} placeholder="you@example.com" />
-                    </div>
+            <form className="space-y-3" onSubmit={handleSubmit}>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className={inputClass} placeholder="John Doe" />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} placeholder="you@example.com" />
+                </div>
+                {/* Password row */}
+                <div className="grid grid-cols-2 gap-3">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                         <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass} placeholder="••••••••" />
@@ -72,36 +91,56 @@ export default function Register() {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
                         <input type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className={inputClass} placeholder="••••••••" />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Select Company</label>
-                        <select required value={companyId} onChange={(e) => setCompanyId(e.target.value)} className={inputClass} disabled={companiesLoading}>
-                            <option value="" disabled>{companiesLoading ? "Loading companies…" : "-- Choose a company --"}</option>
-                            {(companies ?? []).map((c) => (
-                                <option key={c.id} value={c.id}>{c.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="flex items-start gap-2">
-                        <input id="terms" type="checkbox" required checked={agreed} onChange={(e) => setAgreed(e.target.checked)}
-                            className="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded" />
-                        <label htmlFor="terms" className="text-sm text-gray-700">
-                            I agree to the{" "}
-                            <Link href="/terms" className="text-green-600 hover:underline font-medium">Terms and Conditions</Link>
-                            {" "}and{" "}
-                            <Link href="/privacy-policy" className="text-green-600 hover:underline font-medium">Privacy Policy</Link>.
-                        </label>
-                    </div>
-                    <button type="submit" disabled={isLoading}
-                        className="w-full py-3 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                        {isLoading ? "Registering..." : "Register"}
-                    </button>
-                </form>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Select Company</label>
+                    <select required value={companyId} onChange={(e) => setCompanyId(e.target.value)} className={inputClass} disabled={companiesLoading}>
+                        <option value="" disabled>{companiesLoading ? "Loading companies…" : "-- Choose a company --"}</option>
+                        {(companies ?? []).map((c) => (
+                            <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="flex items-start gap-2">
+                    <input id="terms" type="checkbox" required checked={agreed} onChange={(e) => setAgreed(e.target.checked)}
+                        className="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded" />
+                    <label htmlFor="terms" className="text-sm text-gray-700">
+                        I agree to the{" "}
+                        <Link href="/terms" className="text-green-600 hover:underline font-medium">Terms and Conditions</Link>
+                        {" "}and{" "}
+                        <Link href="/privacy-policy" className="text-green-600 hover:underline font-medium">Privacy Policy</Link>.
+                    </label>
+                </div>
+                <button type="submit" disabled={isLoading}
+                    className="w-full py-2.5 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    {isLoading ? "Registering..." : "Register"}
+                </button>
+            </form>
 
-                <p className="mt-6 text-center text-sm text-gray-600">
-                    Already have an account?{" "}
+            <p className="mt-4 text-center text-sm text-gray-600">
+                Already have an account?{" "}
+                {onSwitchToLogin ? (
+                    <button onClick={onSwitchToLogin} className="font-medium text-green-600 hover:text-green-500">Login here</button>
+                ) : (
                     <Link href="/login" className="font-medium text-green-600 hover:text-green-500">Login here</Link>
-                </p>
+                )}
+            </p>
+        </div>
+    );
+
+    if (onClose) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
+                <div className="w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                    {card}
+                </div>
             </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-5">
+            {card}
         </div>
     );
 }

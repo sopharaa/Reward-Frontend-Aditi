@@ -23,7 +23,7 @@ export default function UserHeader() {
     const handleLogout = () => {
         document.cookie = "user_token=; path=/; max-age=0";
         dispatch(clearUser());
-        router.push("/login");
+        router.push("/");
     };
 
     const closeMenu = () => setMenuOpen(false);

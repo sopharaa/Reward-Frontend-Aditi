@@ -1,34 +1,64 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import Login from "@/components/user/Login";
+import Register from "@/components/user/Register";
+
+type Modal = "login" | "register" | null;
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/login", label: "Login" },
-  { href: "/register", label: "Register" },
+  { label: "Login", modal: "login" as Modal },
+  { label: "Register", modal: "register" as Modal },
   { href: "/about", label: "About" },
   { href: "/help", label: "Help" },
 ];
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState<Modal>(null);
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
+      {/* Modals */}
+      {activeModal === "login" && (
+        <Login
+          onClose={() => setActiveModal(null)}
+          onSwitchToRegister={() => setActiveModal("register")}
+        />
+      )}
+      {activeModal === "register" && (
+        <Register
+          onClose={() => setActiveModal(null)}
+          onSwitchToLogin={() => setActiveModal("login")}
+        />
+      )}
+
       {/* Navigation */}
       <nav className="bg-white shadow-sm border-b border-gray-200">
-        <div className="px-6 py-4 flex justify-between items-center">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-2xl font-extrabold text-green-700">PointTrix</div>
 
           {/* Desktop links */}
           <ul className="hidden md:flex space-x-6">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} className="text-gray-700 hover:text-green-600 font-medium transition duration-300">
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {navLinks.map((link) =>
+              link.href ? (
+                <li key={link.label}>
+                  <Link href={link.href} className="text-gray-700 hover:text-green-600 font-medium transition duration-300">
+                    {link.label}
+                  </Link>
+                </li>
+              ) : (
+                <li key={link.label}>
+                  <button
+                    onClick={() => setActiveModal(link.modal!)}
+                    className="text-gray-700 hover:text-green-600 font-medium transition duration-300"
+                  >
+                    {link.label}
+                  </button>
+                </li>
+              )
+            )}
           </ul>
 
           {/* Hamburger – mobile only */}
@@ -45,14 +75,25 @@ export default function Home() {
 
         {/* Mobile slide-down */}
         <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? "max-h-64 border-t border-gray-100" : "max-h-0"}`}>
-          <ul className="flex flex-col px-6 py-2 bg-white">
-            {navLinks.map((link) => (
-              <li key={link.href} className="border-b border-gray-100 last:border-0">
-                <Link href={link.href} onClick={() => setMenuOpen(false)} className="block py-3 text-gray-700 hover:text-green-600 font-medium transition duration-300">
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+          <ul className="max-w-6xl mx-auto flex flex-col px-6 py-2 bg-white">
+            {navLinks.map((link) =>
+              link.href ? (
+                <li key={link.label} className="border-b border-gray-100 last:border-0">
+                  <Link href={link.href} onClick={() => setMenuOpen(false)} className="block py-3 text-gray-700 hover:text-green-600 font-medium transition duration-300">
+                    {link.label}
+                  </Link>
+                </li>
+              ) : (
+                <li key={link.label} className="border-b border-gray-100 last:border-0">
+                  <button
+                    onClick={() => { setActiveModal(link.modal!); setMenuOpen(false); }}
+                    className="block w-full text-left py-3 text-gray-700 hover:text-green-600 font-medium transition duration-300"
+                  >
+                    {link.label}
+                  </button>
+                </li>
+              )
+            )}
           </ul>
         </div>
       </nav>
@@ -68,12 +109,18 @@ export default function Home() {
             Empower your users and grow your platform with our flexible reward solution.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/register" className="bg-white text-green-700 px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+            <button
+              onClick={() => setActiveModal("register")}
+              className="bg-white text-green-700 px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105"
+            >
               Get Started Now
-            </Link>
-            <Link href="/login" className="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:bg-green-800 hover:border-green-800 transition duration-300 transform hover:scale-105">
+            </button>
+            <button
+              onClick={() => setActiveModal("login")}
+              className="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:bg-green-800 hover:border-green-800 transition duration-300 transform hover:scale-105"
+            >
               Already a Member? Log In
-            </Link>
+            </button>
           </div>
         </section>
 
@@ -111,9 +158,12 @@ export default function Home() {
           <p className="text-base sm:text-lg text-gray-700 mb-8 max-w-xl mx-auto">
             Join thousands of businesses enhancing their platforms with our intuitive and powerful reward system.
           </p>
-          <Link href="/register" className="inline-block bg-green-600 text-white px-10 py-4 rounded-full font-bold text-xl shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105">
+          <button
+            onClick={() => setActiveModal("register")}
+            className="inline-block bg-green-600 text-white px-10 py-4 rounded-full font-bold text-xl shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105"
+          >
             Sign Up Today!
-          </Link>
+          </button>
         </section>
       </div>
     </div>

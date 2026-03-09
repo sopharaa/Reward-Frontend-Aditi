@@ -15,14 +15,12 @@ export function middleware(request: NextRequest) {
         return staffMiddleware(request);
     }
 
-    // User protected + auth routes
+    // User protected routes
     if (
         pathname.startsWith("/dashboard") ||
         pathname.startsWith("/redeem") ||
         pathname.startsWith("/history") ||
-        pathname.startsWith("/profile") ||
-        pathname === "/login" ||
-        pathname === "/register"
+        pathname.startsWith("/profile")
     ) {
         return userMiddleware(request);
     }
@@ -38,7 +36,5 @@ export const config = {
         "/redeem/:path*",
         "/history/:path*",
         "/profile/:path*",
-        "/login",
-        "/register",
     ],
 };
