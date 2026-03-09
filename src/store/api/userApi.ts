@@ -124,5 +124,5 @@ export const userApi = createApi({
 
 export const { useGetUserProfileQuery, useUpdateUserProfileMutation, useGetRewardsByCompanyQuery, useRedeemRewardMutation, useGetMyRedemptionsQuery, useGetMyOrdersQuery } = userApi;
 
-export type { UserOrderResponse, RedemptionResponse };
+
 
