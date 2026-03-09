@@ -12,6 +12,19 @@ import {
 } from "@/store/api/adminApi";
 import Pagination from "@/components/admin/Pagination";
 
+function EyeIcon({ open }: { open: boolean }) {
+    return open ? (
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+    ) : (
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95M6.47 6.47A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-1.293 2.65M6.47 6.47L3 3m3.47 3.47l11.06 11.06M6.47 6.47l11.06 11.06" />
+        </svg>
+    );
+}
+
 export default function AdminCustomer() {
     const { data: customers, isLoading, isError } = useGetCustomersQuery();
     const { data: companies, isLoading: companiesLoading } = useGetCompaniesQuery();
@@ -25,6 +38,13 @@ export default function AdminCustomer() {
     const [deleteError, setDeleteError] = useState<string | null>(null);
     const PAGE_SIZE = 8;
 
+    // Toast
+    const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+    function showToast(msg: string, type: "success" | "error") {
+        setToast({ msg, type });
+        setTimeout(() => setToast(null), 4000);
+    }
+
     // Create form state
     const [showCreate, setShowCreate] = useState(false);
     const [createName, setCreateName] = useState("");
@@ -33,6 +53,8 @@ export default function AdminCustomer() {
     const [createConfirmPassword, setCreateConfirmPassword] = useState("");
     const [createCompanyId, setCreateCompanyId] = useState("");
     const [createError, setCreateError] = useState<string | null>(null);
+    const [showCreatePassword, setShowCreatePassword] = useState(false);
+    const [showCreateConfirmPassword, setShowCreateConfirmPassword] = useState(false);
 
     const resetCreateForm = () => {
         setCreateName(""); setCreateEmail(""); setCreatePassword("");
@@ -56,6 +78,7 @@ export default function AdminCustomer() {
             }).unwrap();
             setShowCreate(false);
             resetCreateForm();
+            showToast("Customer created successfully!", "success");
         } catch (err: unknown) {
             const e = err as { data?: { message?: string } };
             setCreateError(e?.data?.message ?? "Failed to create customer. Please try again.");
@@ -68,6 +91,7 @@ export default function AdminCustomer() {
         try {
             await deleteCustomer(deleteTarget.id).unwrap();
             setDeleteTarget(null);
+            showToast("Customer deleted successfully!", "success");
         } catch (err: unknown) {
             const e = err as { error?: string; data?: { message?: string } };
             setDeleteError(e?.error ?? e?.data?.message ?? "Failed to delete customer.");
@@ -77,7 +101,7 @@ export default function AdminCustomer() {
     const filtered = (customers ?? []).filter((c) => {
         const q = search.toLowerCase();
         return c.name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q) || c.companyName?.toLowerCase().includes(q);
-    });
+    }).sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
     const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
     const safePage = Math.min(currentPage, totalPages || 1);
     const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
@@ -93,6 +117,7 @@ export default function AdminCustomer() {
     const [editCompanyId, setEditCompanyId] = useState("");
     const [editPoints, setEditPoints] = useState("");
     const [editError, setEditError] = useState<string | null>(null);
+    const [showEditPassword, setShowEditPassword] = useState(false);
 
     useEffect(() => {
         if (editTarget) {
@@ -121,6 +146,7 @@ export default function AdminCustomer() {
                 },
             }).unwrap();
             setEditTarget(null);
+            showToast("Customer updated successfully!", "success");
         } catch (err: unknown) {
             const e = err as { data?: { message?: string } };
             setEditError(e?.data?.message ?? "Failed to update customer.");
@@ -155,7 +181,7 @@ export default function AdminCustomer() {
                     <table className="user-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>#</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Company</th>
@@ -170,9 +196,9 @@ export default function AdminCustomer() {
                                         {search ? "No customers match your search." : "No customers found."}
                                     </td>
                                 </tr>
-                            ) : paged.map((customer) => (
+                            ) : paged.map((customer, index) => (
                                 <tr key={customer.id}>
-                                    <td>{customer.id}</td>
+                                    <td>{(safePage - 1) * PAGE_SIZE + index + 1}</td>
                                     <td>
                                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                             {customer.profileImage ? (
@@ -237,11 +263,21 @@ export default function AdminCustomer() {
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                                 <div>
                                     <label style={labelStyle}>Password <span style={{ color: "#dc2626" }}>*</span></label>
-                                    <input style={inputStyle} type="password" required value={createPassword} onChange={(e) => setCreatePassword(e.target.value)} placeholder="••••••••" />
+                                    <div style={{ position: "relative" }}>
+                                        <input style={{ ...inputStyle, paddingRight: "36px" }} type={showCreatePassword ? "text" : "password"} required value={createPassword} onChange={(e) => setCreatePassword(e.target.value)} placeholder="••••••••" />
+                                        <button type="button" onClick={() => setShowCreatePassword(!showCreatePassword)} style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-60%)", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: 0 }} tabIndex={-1} aria-label="Toggle password visibility">
+                                            <EyeIcon open={showCreatePassword} />
+                                        </button>
+                                    </div>
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Confirm Password <span style={{ color: "#dc2626" }}>*</span></label>
-                                    <input style={inputStyle} type="password" required value={createConfirmPassword} onChange={(e) => setCreateConfirmPassword(e.target.value)} placeholder="••••••••" />
+                                    <div style={{ position: "relative" }}>
+                                        <input style={{ ...inputStyle, paddingRight: "36px" }} type={showCreateConfirmPassword ? "text" : "password"} required value={createConfirmPassword} onChange={(e) => setCreateConfirmPassword(e.target.value)} placeholder="••••••••" />
+                                        <button type="button" onClick={() => setShowCreateConfirmPassword(!showCreateConfirmPassword)} style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-60%)", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: 0 }} tabIndex={-1} aria-label="Toggle confirm password visibility">
+                                            <EyeIcon open={showCreateConfirmPassword} />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -282,7 +318,12 @@ export default function AdminCustomer() {
                                 New Password
                                 <span style={{ fontWeight: 400, color: "#6b7280", marginLeft: "6px", fontSize: "12px" }}>(leave blank to keep current)</span>
                             </label>
-                            <input style={inputStyle} type="password" value={editPassword} onChange={(e) => setEditPassword(e.target.value)} placeholder="••••••••" />
+                            <div style={{ position: "relative" }}>
+                                <input style={{ ...inputStyle, paddingRight: "36px" }} type={showEditPassword ? "text" : "password"} value={editPassword} onChange={(e) => setEditPassword(e.target.value)} placeholder="••••••••" />
+                                <button type="button" onClick={() => setShowEditPassword(!showEditPassword)} style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-60%)", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: 0 }} tabIndex={-1} aria-label="Toggle password visibility">
+                                    <EyeIcon open={showEditPassword} />
+                                </button>
+                            </div>
 
                             <label style={labelStyle}>Company <span style={{ color: "#dc2626" }}>*</span></label>
                             <select style={inputStyle} required value={editCompanyId} onChange={(e) => setEditCompanyId(e.target.value)} disabled={companiesLoading}>
@@ -305,6 +346,21 @@ export default function AdminCustomer() {
                             </div>
                         </form>
                     </div>
+                </div>
+            )}
+
+            {/* Toast Notification */}
+            {toast && (
+                <div style={{
+                    position: "fixed", top: "24px", right: "24px", zIndex: 9999,
+                    display: "flex", alignItems: "center", gap: "10px",
+                    padding: "14px 20px", borderRadius: "12px", boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+                    backgroundColor: toast.type === "success" ? "#059669" : "#dc2626",
+                    color: "white", fontSize: "14px", fontWeight: 500, maxWidth: "360px",
+                }}>
+                    <span>{toast.type === "success" ? "✓" : "✕"}</span>
+                    <span>{toast.msg}</span>
+                    <button onClick={() => setToast(null)} style={{ marginLeft: "auto", background: "none", border: "none", color: "white", cursor: "pointer", fontSize: "16px", lineHeight: 1 }}>×</button>
                 </div>
             )}
         </div>

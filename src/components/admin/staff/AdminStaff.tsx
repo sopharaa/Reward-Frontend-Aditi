@@ -12,6 +12,19 @@ import {
 import type { Staff } from "@/store/api/adminApi";
 import Pagination from "@/components/admin/Pagination";
 
+function EyeIcon({ open }: { open: boolean }) {
+    return open ? (
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+    ) : (
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95M6.47 6.47A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-1.293 2.65M6.47 6.47L3 3m3.47 3.47l11.06 11.06M6.47 6.47l11.06 11.06" />
+        </svg>
+    );
+}
+
 export default function AdminStaff() {
     const { data: staffs, isLoading, isError } = useGetStaffsQuery();
     const { data: companies, isLoading: companiesLoading } = useGetCompaniesQuery();
@@ -22,6 +35,13 @@ export default function AdminStaff() {
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const PAGE_SIZE = 8;
+
+    // Toast
+    const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+    function showToast(msg: string, type: "success" | "error") {
+        setToast({ msg, type });
+        setTimeout(() => setToast(null), 4000);
+    }
 
     // Delete
     const [deleteTarget, setDeleteTarget] = useState<Staff | null>(null);
@@ -35,19 +55,24 @@ export default function AdminStaff() {
     const [createConfirmPassword, setCreateConfirmPassword] = useState("");
     const [createCompanyId, setCreateCompanyId] = useState("");
     const [createError, setCreateError] = useState<string | null>(null);
+    const [showCreatePassword, setShowCreatePassword] = useState(false);
+    const [showCreateConfirmPassword, setShowCreateConfirmPassword] = useState(false);
 
     // Edit
     const [editTarget, setEditTarget] = useState<Staff | null>(null);
     const [editName, setEditName] = useState("");
     const [editEmail, setEditEmail] = useState("");
     const [editCompanyId, setEditCompanyId] = useState("");
+    const [editPassword, setEditPassword] = useState("");
     const [editError, setEditError] = useState<string | null>(null);
+    const [showEditPassword, setShowEditPassword] = useState(false);
 
     useEffect(() => {
         if (editTarget) {
             setEditName(editTarget.name ?? "");
             setEditEmail(editTarget.email ?? "");
             setEditCompanyId(String(editTarget.companyId ?? ""));
+            setEditPassword("");
             setEditError(null);
         }
     }, [editTarget]);
@@ -68,6 +93,7 @@ export default function AdminStaff() {
             await createStaff({ name: createName, email: createEmail, password: createPassword, confirmPassword: createConfirmPassword, companyId: Number(createCompanyId) }).unwrap();
             setShowCreate(false);
             resetCreateForm();
+            showToast("Staff created successfully!", "success");
         } catch (err: unknown) {
             const e = err as { data?: { message?: string } };
             setCreateError(e?.data?.message ?? "Failed to create staff. Please try again.");
@@ -79,8 +105,9 @@ export default function AdminStaff() {
         if (!editTarget) return;
         setEditError(null);
         try {
-            await updateStaff({ id: editTarget.id, body: { name: editName, email: editEmail, companyId: Number(editCompanyId) } }).unwrap();
+            await updateStaff({ id: editTarget.id, body: { name: editName, email: editEmail, companyId: Number(editCompanyId), ...(editPassword ? { password: editPassword } : {}) } }).unwrap();
             setEditTarget(null);
+            showToast("Staff updated successfully!", "success");
         } catch (err: unknown) {
             const e = err as { data?: { message?: string } };
             setEditError(e?.data?.message ?? "Failed to update staff.");
@@ -93,6 +120,7 @@ export default function AdminStaff() {
         try {
             await deleteStaff(deleteTarget.id).unwrap();
             setDeleteTarget(null);
+            showToast("Staff deleted successfully!", "success");
         } catch (err: unknown) {
             const e = err as { error?: string; data?: { message?: string } };
             setDeleteError(e?.error ?? e?.data?.message ?? "Failed to delete staff.");
@@ -102,7 +130,7 @@ export default function AdminStaff() {
     const filtered = (staffs ?? []).filter((s) => {
         const q = search.toLowerCase();
         return s.name?.toLowerCase().includes(q) || s.email?.toLowerCase().includes(q) || s.companyName?.toLowerCase().includes(q);
-    });
+    }).sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
     const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
     const safePage = Math.min(currentPage, totalPages || 1);
     const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
@@ -139,7 +167,7 @@ export default function AdminStaff() {
                     <table className="user-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>#</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Company</th>
@@ -153,9 +181,9 @@ export default function AdminStaff() {
                                         {search ? "No staffs match your search." : "No staffs found."}
                                     </td>
                                 </tr>
-                            ) : paged.map((staff) => (
+                            ) : paged.map((staff, index) => (
                                 <tr key={staff.id}>
-                                    <td>{staff.id}</td>
+                                    <td>{(safePage - 1) * PAGE_SIZE + index + 1}</td>
                                     <td>
                                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                             {staff.profileImage ? (
@@ -198,11 +226,21 @@ export default function AdminStaff() {
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                                 <div>
                                     <label style={labelStyle}>Password <span style={{ color: "#dc2626" }}>*</span></label>
-                                    <input style={inputStyle} type="password" required value={createPassword} onChange={(e) => setCreatePassword(e.target.value)} placeholder="••••••••" />
+                                    <div style={{ position: "relative" }}>
+                                        <input style={{ ...inputStyle, paddingRight: "36px" }} type={showCreatePassword ? "text" : "password"} required value={createPassword} onChange={(e) => setCreatePassword(e.target.value)} placeholder="••••••••" />
+                                        <button type="button" onClick={() => setShowCreatePassword(!showCreatePassword)} style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-60%)", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: 0 }} tabIndex={-1} aria-label="Toggle password visibility">
+                                            <EyeIcon open={showCreatePassword} />
+                                        </button>
+                                    </div>
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Confirm Password <span style={{ color: "#dc2626" }}>*</span></label>
-                                    <input style={inputStyle} type="password" required value={createConfirmPassword} onChange={(e) => setCreateConfirmPassword(e.target.value)} placeholder="••••••••" />
+                                    <div style={{ position: "relative" }}>
+                                        <input style={{ ...inputStyle, paddingRight: "36px" }} type={showCreateConfirmPassword ? "text" : "password"} required value={createConfirmPassword} onChange={(e) => setCreateConfirmPassword(e.target.value)} placeholder="••••••••" />
+                                        <button type="button" onClick={() => setShowCreateConfirmPassword(!showCreateConfirmPassword)} style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-60%)", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: 0 }} tabIndex={-1} aria-label="Toggle confirm password visibility">
+                                            <EyeIcon open={showCreateConfirmPassword} />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -247,6 +285,17 @@ export default function AdminStaff() {
                                 ))}
                             </select>
 
+                            <label style={labelStyle}>
+                                New Password
+                                <span style={{ fontWeight: 400, color: "#6b7280", marginLeft: "6px", fontSize: "12px" }}>(leave blank to keep current)</span>
+                            </label>
+                            <div style={{ position: "relative" }}>
+                                <input style={{ ...inputStyle, paddingRight: "36px" }} type={showEditPassword ? "text" : "password"} value={editPassword} onChange={(e) => setEditPassword(e.target.value)} placeholder="••••••••" />
+                                <button type="button" onClick={() => setShowEditPassword(!showEditPassword)} style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-60%)", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: 0 }} tabIndex={-1} aria-label="Toggle password visibility">
+                                    <EyeIcon open={showEditPassword} />
+                                </button>
+                            </div>
+
                             {editError && <p style={{ color: "#dc2626", fontSize: "13px", marginBottom: "12px" }}>{editError}</p>}
 
                             <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "4px" }}>
@@ -274,6 +323,22 @@ export default function AdminStaff() {
                             </button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Toast Notification */}
+            {toast && (
+                <div style={{
+                    position: "fixed", top: "24px", right: "24px", zIndex: 9999,
+                    display: "flex", alignItems: "center", gap: "10px",
+                    padding: "14px 20px", borderRadius: "12px", boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+                    backgroundColor: toast.type === "success" ? "#059669" : "#dc2626",
+                    color: "white", fontSize: "14px", fontWeight: 500, maxWidth: "360px",
+                    animation: "fadeIn 0.2s ease"
+                }}>
+                    <span>{toast.type === "success" ? "✓" : "✕"}</span>
+                    <span>{toast.msg}</span>
+                    <button onClick={() => setToast(null)} style={{ marginLeft: "auto", background: "none", border: "none", color: "white", cursor: "pointer", fontSize: "16px", lineHeight: 1 }}>×</button>
                 </div>
             )}
         </div>

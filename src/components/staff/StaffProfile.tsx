@@ -4,6 +4,19 @@ import Link from "next/link";
 import StaffHeader from "@/components/layouts/StaffHeader";
 import { useGetStaffProfileQuery, useUpdateStaffProfileMutation } from "@/store/api/staffApi";
 
+function EyeIcon({ open }: { open: boolean }) {
+    return open ? (
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+    ) : (
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95M6.47 6.47A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.956 9.956 0 01-1.293 2.65M6.47 6.47L3 3m3.47 3.47l11.06 11.06M6.47 6.47l11.06 11.06" />
+        </svg>
+    );
+}
+
 export default function StaffProfile() {
     const { data: staff, isLoading } = useGetStaffProfileQuery();
     const [updateStaffProfile, { isLoading: isSaving }] = useUpdateStaffProfileMutation();
@@ -14,6 +27,8 @@ export default function StaffProfile() {
     const [profileImage, setProfileImage] = useState<File | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     useEffect(() => {
         if (staff?.name) {
@@ -198,25 +213,35 @@ export default function StaffProfile() {
                                 New Password
                                 <span className="ml-1 text-xs text-gray-400 font-normal">(leave blank to keep current)</span>
                             </label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className={inputClass}
-                                placeholder="••••••••"
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className={`${inputClass} pr-10`}
+                                    placeholder="••••••••"
+                                />
+                                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600" tabIndex={-1} aria-label="Toggle password visibility">
+                                    <EyeIcon open={showPassword} />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Confirm Password */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-                            <input
-                                type="password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                className={inputClass}
-                                placeholder="••••••••"
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className={`${inputClass} pr-10`}
+                                    placeholder="••••••••"
+                                />
+                                <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600" tabIndex={-1} aria-label="Toggle confirm password visibility">
+                                    <EyeIcon open={showConfirmPassword} />
+                                </button>
+                            </div>
                         </div>
 
                         <div className="flex justify-end pt-2">

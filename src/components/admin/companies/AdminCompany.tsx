@@ -29,6 +29,13 @@ export default function AdminCompany() {
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 8;
 
+  // Toast
+  const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+  function showToast(msg: string, type: "success" | "error") {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 4000);
+  }
+
   // Create form state
   const [showCreate, setShowCreate] = useState(false);
   const [createName, setCreateName] = useState("");
@@ -47,6 +54,7 @@ export default function AdminCompany() {
       await createCompany({ name: createName, type: createType, description: createDescription }).unwrap();
       setShowCreate(false);
       resetCreateForm();
+      showToast("Company created successfully!", "success");
     } catch (err: unknown) {
       const e = err as { data?: { message?: string } };
       setCreateError(e?.data?.message ?? "Failed to create company. Please try again.");
@@ -69,6 +77,7 @@ export default function AdminCompany() {
     try {
       await deleteCompany(deleteTarget.id).unwrap();
       setDeleteTarget(null);
+      showToast("Company deleted successfully!", "success");
     } catch (err: unknown) {
       const e = err as { error?: string; data?: { message?: string }; status?: number };
       setDeleteError(e?.error ?? e?.data?.message ?? "Failed to delete company. Make sure you are logged in.");
@@ -82,6 +91,7 @@ export default function AdminCompany() {
     try {
       await updateCompany({ id: editTarget.id, body: { name: editName, type: editType, description: editDescription } }).unwrap();
       setEditTarget(null);
+      showToast("Company updated successfully!", "success");
     } catch (err: unknown) {
       const e = err as { error?: string; data?: { message?: string } };
       setEditError(e?.error ?? e?.data?.message ?? "Failed to update company.");
@@ -121,7 +131,7 @@ export default function AdminCompany() {
           <table className="user-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>#</th>
                 <th>Company Name</th>
                 <th>Type</th>
                 <th>Description</th>
@@ -133,7 +143,7 @@ export default function AdminCompany() {
                 const filtered = (companies ?? []).filter((c) => {
                   const q = search.toLowerCase();
                   return c.name?.toLowerCase().includes(q) || c.type?.toLowerCase().includes(q);
-                });
+                }).sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
                 const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
                 const safePage = Math.min(currentPage, totalPages || 1);
                 const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
@@ -146,9 +156,9 @@ export default function AdminCompany() {
                     </tr>
                   );
                 }
-                return paged.map((company) => (
+                return paged.map((company, index) => (
                   <tr key={company.id}>
-                    <td>{company.id}</td>
+                    <td>{(safePage - 1) * PAGE_SIZE + index + 1}</td>
                     <td>{company.name}</td>
                     <td>{company.type}</td>
                     <td>{company.description}</td>
@@ -166,7 +176,7 @@ export default function AdminCompany() {
             const filtered = (companies ?? []).filter((c) => {
               const q = search.toLowerCase();
               return c.name?.toLowerCase().includes(q) || c.type?.toLowerCase().includes(q);
-            });
+            }).sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
             const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
             return <Pagination currentPage={Math.min(currentPage, totalPages || 1)} totalPages={totalPages} onPageChange={(p) => setCurrentPage(p)} />;
           })()}
@@ -261,6 +271,21 @@ export default function AdminCompany() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <div style={{
+          position: "fixed", top: "24px", right: "24px", zIndex: 9999,
+          display: "flex", alignItems: "center", gap: "10px",
+          padding: "14px 20px", borderRadius: "12px", boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+          backgroundColor: toast.type === "success" ? "#059669" : "#dc2626",
+          color: "white", fontSize: "14px", fontWeight: 500, maxWidth: "360px",
+        }}>
+          <span>{toast.type === "success" ? "✓" : "✕"}</span>
+          <span>{toast.msg}</span>
+          <button onClick={() => setToast(null)} style={{ marginLeft: "auto", background: "none", border: "none", color: "white", cursor: "pointer", fontSize: "16px", lineHeight: 1 }}>×</button>
         </div>
       )}
     </div>

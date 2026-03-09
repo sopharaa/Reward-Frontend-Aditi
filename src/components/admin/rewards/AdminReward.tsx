@@ -23,6 +23,13 @@ export default function AdminReward() {
     const [currentPage, setCurrentPage] = useState(1);
     const PAGE_SIZE = 8;
 
+    // Toast
+    const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+    function showToast(msg: string, type: "success" | "error") {
+        setToast({ msg, type });
+        setTimeout(() => setToast(null), 4000);
+    }
+
     // Delete
     const [deleteTarget, setDeleteTarget] = useState<Reward | null>(null);
     const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -79,6 +86,7 @@ export default function AdminReward() {
             await createReward(formData).unwrap();
             setShowCreate(false);
             resetCreateForm();
+            showToast("Reward created successfully!", "success");
         } catch (err: unknown) {
             const e = err as { data?: { message?: string } };
             setCreateError(e?.data?.message ?? "Failed to create reward. Please try again.");
@@ -99,6 +107,7 @@ export default function AdminReward() {
         try {
             await updateReward({ id: editTarget.id, body: formData }).unwrap();
             setEditTarget(null);
+            showToast("Reward updated successfully!", "success");
         } catch (err: unknown) {
             const e = err as { data?: { message?: string } };
             setEditError(e?.data?.message ?? "Failed to update reward.");
@@ -111,6 +120,7 @@ export default function AdminReward() {
         try {
             await deleteReward(deleteTarget.id).unwrap();
             setDeleteTarget(null);
+            showToast("Reward deleted successfully!", "success");
         } catch (err: unknown) {
             const e = err as { error?: string; data?: { message?: string } };
             setDeleteError(e?.error ?? e?.data?.message ?? "Failed to delete reward.");
@@ -120,7 +130,7 @@ export default function AdminReward() {
     const filtered = (rewards ?? []).filter((r: Reward) => {
         const q = search.toLowerCase();
         return r.name?.toLowerCase().includes(q) || r.companyName?.toLowerCase().includes(q);
-    });
+    }).sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
     const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
     const safePage = Math.min(currentPage, totalPages || 1);
     const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
@@ -157,7 +167,7 @@ export default function AdminReward() {
                     <table className="user-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>#</th>
                                 <th>Reward Name</th>
                                 <th>Stock</th>
                                 <th>Points Required</th>
@@ -172,9 +182,9 @@ export default function AdminReward() {
                                         {search ? "No rewards match your search." : "No rewards found."}
                                     </td>
                                 </tr>
-                            ) : paged.map((reward: Reward) => (
+                            ) : paged.map((reward: Reward, index) => (
                                 <tr key={reward.id}>
-                                    <td>{reward.id}</td>
+                                    <td>{(safePage - 1) * PAGE_SIZE + index + 1}</td>
                                     <td>
                                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                             {reward.image ? (
@@ -315,6 +325,21 @@ export default function AdminReward() {
                             </button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Toast Notification */}
+            {toast && (
+                <div style={{
+                    position: "fixed", top: "24px", right: "24px", zIndex: 9999,
+                    display: "flex", alignItems: "center", gap: "10px",
+                    padding: "14px 20px", borderRadius: "12px", boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+                    backgroundColor: toast.type === "success" ? "#059669" : "#dc2626",
+                    color: "white", fontSize: "14px", fontWeight: 500, maxWidth: "360px",
+                }}>
+                    <span>{toast.type === "success" ? "✓" : "✕"}</span>
+                    <span>{toast.msg}</span>
+                    <button onClick={() => setToast(null)} style={{ marginLeft: "auto", background: "none", border: "none", color: "white", cursor: "pointer", fontSize: "16px", lineHeight: 1 }}>×</button>
                 </div>
             )}
         </div>
