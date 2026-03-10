@@ -50,9 +50,6 @@ export default function StaffLoginForm() {
         <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
             {/* Logo / Brand */}
             <div className="flex flex-col items-center mb-6">
-                <div className="w-14 h-14 rounded-full bg-green-600 flex items-center justify-center mb-3">
-                    <span className="text-white text-2xl font-extrabold">P</span>
-                </div>
                 <h1 className="text-xl font-extrabold text-green-700 tracking-wide">PointTrix</h1>
                 <p className="text-sm text-gray-500 mt-1">Staff Portal</p>
             </div>

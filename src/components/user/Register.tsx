@@ -73,9 +73,6 @@ export default function Register({ onClose, onSwitchToLogin }: RegisterProps = {
             )}
             {/* Brand */}
             <div className="flex flex-col items-center mb-4">
-                <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center mb-2">
-                    <span className="text-white text-lg font-extrabold">P</span>
-                </div>
                 <h1 className="text-base font-extrabold text-green-700">PointTrix</h1>
             </div>
 
