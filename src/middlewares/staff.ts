@@ -18,4 +18,3 @@ export function staffMiddleware(request: NextRequest) {
 
     return NextResponse.next();
 }
-

@@ -12,7 +12,7 @@ export interface UpdateCompanyRequest { name: string; type: string; description:
 // ── Staff ─────────────────────────────────────────────────────────
 export interface Staff { id: number; companyId: number; companyName: string; name: string; email: string; profileImage: string; createdAt: string; updatedAt: string; }
 export interface CreateStaffRequest { name: string; email: string; password: string; confirmPassword: string; companyId: number; }
-export interface UpdateStaffRequest { name: string; email: string; companyId: number; password?: string; }
+export interface UpdateStaffRequest { name: string; email: string; companyId: number; }
 export interface StaffLoginRequest { email: string; password: string; }
 export interface StaffLoginResponse { id: number; name: string; email: string; companyId: number; companyName: string; profileImage: string; accessToken: string; refreshToken: string; }
 

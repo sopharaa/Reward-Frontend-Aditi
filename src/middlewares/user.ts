@@ -15,5 +15,3 @@ export function userMiddleware(request: NextRequest) {
 
     return NextResponse.next();
 }
-
-
