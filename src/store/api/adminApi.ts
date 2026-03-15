@@ -136,7 +136,7 @@ export const adminApi = createApi({
         }),
         updateCustomer: builder.mutation<{ message: string; data: Customer }, { id: number; body: UpdateCustomerRequest }>({
             query: ({ id, body }) => ({ url: `/api/admins/users/${id}`, method: "PUT", body }),
-            invalidatesTags: (_r, _e, { id }) => [{ type: "Customer", id }, "Customer"],
+            invalidatesTags: (_r, n, { id }) => [{ type: "Customer", id }, "Customer"],
         }),
         deleteCustomer: builder.mutation<{ message: string; data: null }, number>({
             queryFn: async (id, _api, _extra, baseQuery) => {
