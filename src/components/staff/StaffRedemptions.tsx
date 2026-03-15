@@ -5,6 +5,7 @@ import StaffHeader from "@/components/layouts/StaffHeader";
 import StaffPagination from "@/components/staff/StaffPagination";
 import { useGetPendingRedemptionsQuery, useUpdateRedemptionStatusMutation } from "@/store/api/staffApi";
 import type { RedemptionResponse } from "@/store/api/staffApi";
+import { formatBangkokDateTime } from "@/utils/date";
 
 const PAGE_SIZE = 8;
 
@@ -94,7 +95,7 @@ export default function StaffRedemptions() {
                                                                 <td className="px-4 py-3 text-center">
                                                                     <span className="inline-block bg-yellow-100 text-yellow-700 font-bold px-3 py-1 rounded-full text-xs">-{r.pointSpend} pts</span>
                                                                 </td>
-                                                                <td className="px-4 py-3 text-gray-500 text-xs">{new Date(r.createdAt).toLocaleString()}</td>
+                                                                <td className="px-4 py-3 text-gray-500 text-xs">{formatBangkokDateTime(r.createdAt)}</td>
                                                                 <td className="px-4 py-3 text-center">
                                                                     <div className="flex gap-2 justify-center">
                                                                         <button disabled={processing === r.id} onClick={() => setConfirmModal({ redemption: r, action: "ACCEPT" })} className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">Accept</button>
@@ -158,4 +159,3 @@ export default function StaffRedemptions() {
         </>
     );
 }
-

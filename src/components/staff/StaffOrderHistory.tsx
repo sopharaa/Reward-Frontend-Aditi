@@ -4,6 +4,7 @@ import Link from "next/link";
 import StaffHeader from "@/components/layouts/StaffHeader";
 import StaffPagination from "@/components/staff/StaffPagination";
 import { useGetMyOrdersQuery } from "@/store/api/staffApi";
+import { formatBangkokDateTime } from "@/utils/date";
 
 const PAGE_SIZE = 8;
 
@@ -104,7 +105,7 @@ export default function StaffOrderHistory() {
                                                         <td className="px-4 py-3 text-center">
                                                             <span className="inline-block bg-green-100 text-green-700 font-bold px-3 py-1 rounded-full text-xs">+{order.pointsEarned} pts</span>
                                                         </td>
-                                                        <td className="px-4 py-3 text-gray-500 text-xs">{new Date(order.createdAt).toLocaleString()}</td>
+                                                        <td className="px-4 py-3 text-gray-500 text-xs">{formatBangkokDateTime(order.createdAt)}</td>
                                                     </tr>
                                                 ))
                                             )}

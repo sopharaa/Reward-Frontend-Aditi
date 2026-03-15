@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { formatBangkokDateTime } from "@/utils/date";
 import {
     useGetCompaniesQuery,
     useGetCustomersQuery,
@@ -85,7 +86,7 @@ export default function AdminDashboardStat() {
             <div style={{ marginBottom: 28 }}>
                 <h1 style={{ fontSize: 24, fontWeight: 700, color: "#064e3b", margin: 0 }}>Dashboard</h1>
                 <p style={{ color: "#9ca3af", marginTop: 4, fontSize: 13 }}>
-                    {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+                    {formatBangkokDateTime(new Date(), { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
                 </p>
             </div>
 

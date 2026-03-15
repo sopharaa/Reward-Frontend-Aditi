@@ -4,6 +4,7 @@ import UserHeader from "@/components/layouts/UserHeader";
 import Link from "next/link";
 import { useGetMyRedemptionsQuery, useGetMyOrdersQuery, useGetUserProfileQuery } from "@/store/api/userApi";
 import type { UserOrderResponse, RedemptionResponse } from "@/store/api/userApi";
+import { formatBangkokDateTime } from "@/utils/date";
 
 export default function History() {
     const { data: user } = useGetUserProfileQuery();
@@ -154,7 +155,7 @@ export default function History() {
                                                 )}
                                             </td>
                                             <td className="px-6 py-3 text-gray-500 text-xs">
-                                                {new Date(row.date).toLocaleString()}
+                                                {formatBangkokDateTime(row.date)}
                                             </td>
                                         </tr>
                                     ))

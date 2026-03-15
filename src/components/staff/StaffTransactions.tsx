@@ -4,6 +4,7 @@ import Link from "next/link";
 import StaffHeader from "@/components/layouts/StaffHeader";
 import StaffPagination from "@/components/staff/StaffPagination";
 import { useGetCompanyTransactionsQuery } from "@/store/api/staffApi";
+import { formatBangkokDateTime } from "@/utils/date";
 
 const PAGE_SIZE = 8;
 
@@ -76,7 +77,7 @@ export default function StaffTransactions() {
                                                     <span className="inline-block bg-yellow-100 text-yellow-700 font-bold px-3 py-1 rounded-full text-xs">-{t.pointSpend} pts</span>
                                                 </td>
                                                 <td className="px-4 py-3 text-center">{statusBadge(t.status)}</td>
-                                                <td className="px-4 py-3 text-gray-500 text-xs">{new Date(t.createdAt).toLocaleString()}</td>
+                                                <td className="px-4 py-3 text-gray-500 text-xs">{formatBangkokDateTime(t.createdAt)}</td>
                                             </tr>
                                         ))
                                     )}

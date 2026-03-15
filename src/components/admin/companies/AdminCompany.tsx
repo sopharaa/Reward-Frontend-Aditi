@@ -10,6 +10,7 @@ import {
   Company,
 } from "@/store/api/adminApi";
 import Pagination from "@/components/admin/Pagination";
+import { formatBangkokDateTime } from "@/utils/date";
 
 export default function AdminCompany() {
   const { data: companies, isLoading, isError } = useGetCompaniesQuery();
@@ -220,8 +221,8 @@ export default function AdminCompany() {
             <p><strong>Name:</strong> {viewCompany.name}</p>
             <p><strong>Type:</strong> {viewCompany.type}</p>
             <p><strong>Description:</strong> {viewCompany.description}</p>
-            <p><strong>Created:</strong> {new Date(viewCompany.createdAt).toLocaleString()}</p>
-            <p><strong>Updated:</strong> {new Date(viewCompany.updatedAt).toLocaleString()}</p>
+            <p><strong>Created:</strong> {formatBangkokDateTime(viewCompany.createdAt)}</p>
+            <p><strong>Updated:</strong> {formatBangkokDateTime(viewCompany.updatedAt)}</p>
             <div className="mt-4 flex justify-end">
               <button className="btn-cancel" onClick={() => setViewCompany(null)}>Close</button>
             </div>
