@@ -1,4 +1,4 @@
-# 🎁 Reward Frontend
+# Pointrix: Reward Frontend
 
 A modern, full-featured reward management system frontend built with **Next.js 16**, **React 19**, **TypeScript**, **Tailwind CSS**, and **Redux Toolkit (RTK Query)**.
 
