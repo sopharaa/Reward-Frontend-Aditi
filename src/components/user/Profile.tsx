@@ -77,7 +77,7 @@ export default function Profile() {
         <div className="w-full min-h-screen bg-gray-50">
             <UserHeader />
 
-            <div className="w-[85%] mx-auto pt-16 pb-8">
+            <div className="w-[85%] mx-auto pt-4 pb-8">
 
                 {/* User Banner */}
                 <div className="bg-gradient-to-r from-green-600 to-green-800 text-white p-6 rounded-lg shadow-md mb-8 flex flex-col md:flex-row items-center justify-between">
