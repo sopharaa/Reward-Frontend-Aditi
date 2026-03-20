@@ -4,7 +4,7 @@ A modern, full-featured reward management system frontend built with **Next.js 1
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Tech Stack](#-tech-stack)
 - [Features](#-features)
@@ -15,7 +15,7 @@ A modern, full-featured reward management system frontend built with **Next.js 1
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Technology | Version |
 |---|---|
@@ -28,16 +28,16 @@ A modern, full-featured reward management system frontend built with **Next.js 1
 
 ---
 
-## ✨ Features
+##  Features
 
-### 👤 User Portal
+###  User Portal
 - **Dashboard** – View personal reward points and account summary
 - **Redeem Rewards** – Browse and redeem available rewards
 - **Redemption History** – Track past redemptions
 - **Profile Management** – Update personal account info
 - **Terms & Conditions / Privacy Policy** pages
 
-### 🧑‍💼 Staff Portal
+###  Staff Portal
 - **Staff Dashboard** – Overview of store activity
 - **Orders Management** – View and manage customer orders
 - **Order History** – Browse historical order records
@@ -46,21 +46,21 @@ A modern, full-featured reward management system frontend built with **Next.js 1
 - **Transactions** – View point transaction logs
 - **Profile Management** – Update staff profile
 
-### 🔐 Admin Panel
+###  Admin Panel
 - **Admin Dashboard** – System-wide overview and analytics
 - **Company Management** – Full CRUD (Create, Read, Update, Delete) for companies
 - **Customer Management** – View and manage registered customers
 - **Staff Management** – Add and manage staff accounts
 - **Rewards Management** – Create and manage reward items system-wide
 
-### 🔒 Security & Auth
+###  Security & Auth
 - Role-based route protection via **Next.js Middleware**
 - Separate authentication flows for Admin, Staff, and Users
 - Token-based session management with Redux state
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 src/
@@ -94,7 +94,7 @@ src/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -142,7 +142,7 @@ npm start
 
 ---
 
-## 🌐 Environment Variables
+##  Environment Variables
 
 | Variable | Description | Example |
 |---|---|---|
@@ -150,7 +150,7 @@ npm start
 
 ---
 
-## ☁️ Deployment (DigitalOcean App Platform)
+##  Deployment (DigitalOcean App Platform)
 
 This project includes a `Dockerfile` for containerized deployment on **DigitalOcean App Platform**.
 
@@ -199,7 +199,7 @@ CMD ["npm", "start"]
 
 ---
 
-## 📝 Available Scripts
+## Available Scripts
 
 | Command | Description |
 |---|---|
