@@ -212,5 +212,5 @@ CMD ["npm", "start"]
 
 ## 🔗 Related
 
-- **Backend Repository**: *(add link to your backend repo here)*
-- **Live Demo**: *(add your DigitalOcean app URL here)*
+- **Backend Repository**: *https://github.com/sopharaa/Reward-Backend-Aditi*
+- **Live Demo**: *https://pointrix.paragoniu.me/*
